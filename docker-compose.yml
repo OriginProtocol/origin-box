@@ -143,6 +143,6 @@ services:
       >
       /bin/bash -c "wait-for.sh -t 0 -q origin-bridge:5000 --
       echo 'origin-bridge is available, starting origin-dapp' &&
-      node_modules/.bin/webpack-dev-server"
+      node_modules/.bin/webpack-dev-server --host 0.0.0.0"
     networks:
       - origin-develop
