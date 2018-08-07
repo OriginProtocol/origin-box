@@ -89,8 +89,8 @@ services:
       - FLASK_APP=/app/main.py
       - FLASK_DEBUG=1
     command:
-      # Waits for origin-js to start, 8081 is the tests server which is
-      # the last component of origin-js to start
+      # Waits for origin-js to start, 8080 is the IPFS server which starts
+      # after the contracts have been compiled
       >
       /bin/bash -c "wait-for.sh -t 0 -q origin-js:8080 --
       echo 'origin-js is available, starting origin-bridge...' &&
