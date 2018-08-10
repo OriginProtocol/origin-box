@@ -61,7 +61,7 @@ services:
       - "8080:8080" # IPFS gateway
       - "8081:8081" # Tests
       - "8545:8545" # Blockchain
-    command: npm start
+    command: node scripts/build.js serve
     networks:
       - origin-develop
 
@@ -89,10 +89,10 @@ services:
       - FLASK_APP=/app/main.py
       - FLASK_DEBUG=1
     command:
-      # Waits for origin-js to start, 8081 is the tests server which is
-      # the last component of origin-js to start
+      # Waits for origin-js to start, 8080 is the IPFS server which starts
+      # after the contracts have been compiled
       >
-      /bin/bash -c "wait-for.sh -t 0 -q origin-js:8081 --
+      /bin/bash -c "wait-for.sh -t 0 -q origin-js:8080 --
       echo 'origin-js is available, starting origin-bridge...' &&
       flask run --host=0.0.0.0"
     networks:
@@ -148,6 +148,6 @@ services:
       >
       /bin/bash -c "wait-for.sh -t 0 -q origin-bridge:5000 --
       echo 'origin-bridge is available, starting origin-dapp' &&
-      node_modules/.bin/webpack-dev-server --port 3000 --host 0.0.0.0"
+      node_modules/.bin/webpack-dev-server --host 0.0.0.0"
     networks:
       - origin-develop
