@@ -5,7 +5,6 @@ networks:
 
 volumes:
   contracts:  # Compiled contracts
-  origin_js_node_modules:
   flask_session: # Flask session persistence
   pg_data:
 
@@ -52,8 +51,10 @@ services:
       context: .
       dockerfile: dockerfiles/origin-js
     volumes:
-      - ./origin-js:/app
-      - origin_js_node_modules:/app/node_modules
+      - ./origin-js/src:/app/src
+      - ./origin-js/scripts:/app/scripts
+      - ./origin-js/test:/app/test
+      - ./origin-js/webpack.config.js:/app/webpack.config.js
       - contracts:/app/contracts/build/contracts
     ports:
       - "5002:5002" # API
@@ -126,13 +127,18 @@ services:
       context: .
       dockerfile: dockerfiles/origin-dapp
     volumes:
-      - ./origin-dapp:/app
-      # Don't overwrite the installed node_modules
-      - /app/node_modules
+      # Mount each directory of origin-dapp separately so that the
+      # node_modules doesn't require the volume trick which introduces
+      # an issue with package.json dependencies not being updated on
+      # container rebuild
+      - ./origin-dapp/src:/app/src
+      - ./origin-dapp/translations:/app/translations
+      - ./origin-dapp/public:/app/public
+      - ./origin-dapp/webpack.config.js:/app/webpack.config.js
       # Set the envfile from the local envfile
       - ./envfiles/origin-dapp.env:/app/.env
-      - ./origin-js:/app/node_modules/origin
-      - origin_js_node_modules:/app/node_modules/origin/node_modules
+      # Mount compiled origin-js inside node modules
+      - ./origin-js/dist:/app/node_modules/origin/dist
     depends_on:
       - origin-bridge
     ports:
