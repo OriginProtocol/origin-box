@@ -54,6 +54,7 @@ services:
       - ./origin-js/src:/app/src
       - ./origin-js/scripts:/app/scripts
       - ./origin-js/test:/app/test
+      - ./origin-js/contracts:/app/contracts
       - ./origin-js/webpack.config.js:/app/webpack.config.js
       - contracts:/app/contracts/build/contracts
     ports:
