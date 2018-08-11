@@ -120,7 +120,7 @@ and similarly for origin-bridge:
 
 ### Module not found errors
 
-There is a known issue with `docker-compose` and the use of volumes for handling dependencies. For more information refer to the [issue on this repository.](https://github.com/OriginProtocol/origin-box/issues/34).
+There is a known issue with `docker-compose` and the use of volumes for handling dependencies. For more information refer to the [issue on this repository.](https://github.com/OriginProtocol/origin-box/issues/34)
 
 If you encounter a `Module not found` error from `origin-dapp` running the following should resolve the issue:
 
