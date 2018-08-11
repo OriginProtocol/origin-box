@@ -83,13 +83,13 @@ function install_origin_environment() {
 		git clone git@github.com:OriginProtocol/origin-dapp.git --branch develop || true
 
 	run_step "Building containers" \
-		docker-compose build --no-cache
+		docker-compose build
 
 	run_step "Bringing up stack" \
-		docker-compose up -d &&
+		docker-compose up -d
 
 	run_step "Compiling contracts" \
-		docker-compose exec origin-bridge wait-for.sh -t 0 -q origin-js:8081
+		docker-compose exec origin-bridge wait-for.sh -t 0 -q origin-js:8080
 
 	run_step "Configuring database" \
 		docker-compose exec origin-bridge flask db upgrade
@@ -105,7 +105,7 @@ function install_website_environment() {
 		git clone git@github.com:OriginProtocol/origin-website.git --branch develop || true
 
 	run_step "Building containers" \
-	  docker-compose -f docker-compose-web.yml build --no-cache
+	  docker-compose -f docker-compose-web.yml build
 
 	run_step "Bringing up stack" \
 	  docker-compose -f docker-compose-web.yml up -d

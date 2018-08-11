@@ -4,6 +4,7 @@ networks:
   origin-develop:
 
 volumes:
+  origin_js_node_modules:
   contracts:  # Compiled contracts
   flask_session: # Flask session persistence
   pg_data:
@@ -51,18 +52,18 @@ services:
       context: .
       dockerfile: dockerfiles/origin-js
     volumes:
-      - ./origin-js/src:/app/src
-      - ./origin-js/scripts:/app/scripts
-      - ./origin-js/test:/app/test
-      - ./origin-js/contracts:/app/contracts
-      - ./origin-js/webpack.config.js:/app/webpack.config.js
+      - ./origin-js:/app
+      - origin_js_node_modules:/app/node_modules
       - contracts:/app/contracts/build/contracts
     ports:
       - "5002:5002" # API
       - "8080:8080" # IPFS gateway
       - "8081:8081" # Tests
       - "8545:8545" # Blockchain
-    command: node scripts/build.js serve
+    # Run npm install on every container start to avoid volumes issue
+    # https://github.com/docker/compose/issues/4337
+    command: >
+      /bin/bash -c "npm install && node scripts/build.js serve"
     networks:
       - origin-develop
 
@@ -140,6 +141,7 @@ services:
       - ./envfiles/origin-dapp.env:/app/.env
       # Mount compiled origin-js inside node modules
       - ./origin-js/dist:/app/node_modules/origin/dist
+      - origin_js_node_modules:/app/node_modules/origin/node_modules
     depends_on:
       - origin-bridge
     ports:
