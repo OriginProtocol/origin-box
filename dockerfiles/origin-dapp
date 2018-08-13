@@ -3,7 +3,7 @@ FROM node:9
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY ./origin-dapp/package*.json /app/
+COPY ./origin-dapp/package.json /app/
 
 # Make wait-for.sh available
 COPY ./scripts/wait-for.sh /usr/local/bin
