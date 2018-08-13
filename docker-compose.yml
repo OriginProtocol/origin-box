@@ -73,7 +73,11 @@ services:
     image: orbit-db
     volumes:
       - ./origin-bridge/js/messaging:/app/messaging
-    command: node_modules/.bin/babel-node messaging/orbit_server.js
+    command: node_modules/.bin/babel-node messaging/orbit_server.js --presets es2015
+    environment:
+      - MESSAGING_IPFS_WS_ADDRESS=/ip4/0.0.0.0/tcp/9012/ws
+      - MESSAGING_IPFS_AUTH_TOKEN=
+      - MESSAGING_NAMESPACE=
     networks:
       - origin-develop
 
