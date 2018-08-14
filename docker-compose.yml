@@ -74,10 +74,12 @@ services:
     volumes:
       - ./origin-bridge/js/messaging:/app/messaging
     command: node_modules/.bin/babel-node messaging/orbit_server.js --presets es2015
+    ports:
+      - "9012:9012"
     environment:
       - MESSAGING_IPFS_WS_ADDRESS=/ip4/0.0.0.0/tcp/9012/ws
+      - MESSAGING_NAMESPACE=origin-box
       - MESSAGING_IPFS_AUTH_TOKEN=
-      - MESSAGING_NAMESPACE=
     networks:
       - origin-develop
 
@@ -152,7 +154,11 @@ services:
       - ./origin-js:/app/node_modules/origin
       - origin_js_node_modules:/app/node_modules/origin/node_modules
     depends_on:
+      - orbit-db
       - origin-bridge
+    environment:
+      - IPFS_SWARM=/ip4/127.0.0.1/tcp/9012/ws/ipfs/Qmefavfuv8FwWema5ShTanbK8FyhDXjr77hLMqJ6T4DdeK
+      - MESSAGING_NAMESPACE=origin-box
     ports:
       - "3000:3000"
     command:
