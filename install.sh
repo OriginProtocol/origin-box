@@ -85,7 +85,7 @@ function install_origin_environment() {
 		git clone git@github.com:OriginProtocol/origin-dapp.git --branch develop || true
 
 	run_step "Building containers" \
-		docker-compose build
+		docker-compose build --no-cache
 
 	run_step "Bringing up stack" \
 		docker-compose up -d
@@ -107,7 +107,7 @@ function install_website_environment() {
 		git clone git@github.com:OriginProtocol/origin-website.git --branch develop || true
 
 	run_step "Building containers" \
-	  docker-compose -f docker-compose-web.yml build
+	  docker-compose -f docker-compose-web.yml build --no-cache
 
 	run_step "Bringing up stack" \
 	  docker-compose -f docker-compose-web.yml up -d
