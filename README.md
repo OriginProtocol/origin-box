@@ -128,10 +128,7 @@ If you encounter a `Module not found` error from `origin-dapp` running the follo
 
 If this does not resolve the issue, or the error is from `origin-js`, removing all docker containers and volumes and starting from scratch will resolve it:
 
-1. `docker-compose down`
-2. `docker system prune -a`
-3. `docker volume prune`
-4. `./install.sh -e origin`
+	./install.sh -e origin -c
 
 ### Port errors
 

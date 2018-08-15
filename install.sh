@@ -2,8 +2,9 @@
 
 set -e
 
-QUIET=0
+CLEAN=0
 DRY=0
+QUIET=0
 
 function usage() {
   echo "Installs Origin Protocol development environments."
@@ -12,10 +13,11 @@ function usage() {
   echo "  $0 -e [env] [-h] [-v] [-d]"
   echo
   echo "Options:"
+  echo -e "  -c \t Clean - clean up all containers and volumes first'"
+  echo -e "  -d \t Dry run mode - show the commands that would be executed."
   echo -e "  -e \t The environment to install, origin or origin-website."
   echo -e "  -h \t Show this help."
   echo -e "  -q \t Quiet mode - hide output of all commands."
-  echo -e "  -d \t Dry run mode - show the commands that would be executed."
   echo
 }
 
@@ -116,10 +118,13 @@ function install_website_environment() {
 	print_website_finish
 }
 
-	while getopts "e:qdh" opt; do
+	while getopts "e:cqdh" opt; do
   case $opt in
     e)
       ENV=$OPTARG
+      ;;
+    c)
+      CLEAN=1
       ;;
     q)
       QUIET=1
@@ -141,6 +146,15 @@ function install_website_environment() {
       ;;
   esac
 done
+
+if [ "$CLEAN" = 1 ]; then
+    echo -e "\033[31mDoing cleanup... \033[0m"
+    echo
+    [ $DRY -eq 1 ] && dry="echo"
+    eval "$dry docker kill $(docker ps -aq) >/dev/null 2>&1 || true"
+    eval "$dry docker system prune --all --volumes"
+    echo
+fi
 
 if [ "$ENV" = "origin" ]; then
  	install_origin_environment
