@@ -150,9 +150,10 @@ done
 if [ "$CLEAN" = 1 ]; then
     echo -e "\033[31mDoing cleanup... \033[0m"
     echo
-    [ $DRY -eq 1 ] && dry="echo"
-    eval "$dry docker kill $(docker ps -aq) >/dev/null 2>&1 || true"
-    eval "$dry docker system prune --all --volumes"
+    if [ "$DRY" = 0 ]; then
+        docker kill $(docker ps -aq) >/dev/null 2>&1 || true
+        docker system prune --all --volumes
+    fi
     echo
 fi
 
