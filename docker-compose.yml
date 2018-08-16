@@ -163,11 +163,17 @@ services:
     ports:
       - "3000:3000"
     command:
-      # Waits for origin-bridge to start
+      # Waits for origin-bridge to start then uses a script to read the orbit-db
+      # container peer id and write the configuration key/pair to the .env file.
+      #
+      # The copying is necessary because the .env file is mounted as a volume
+      # and the inode is not allowed to change.
       >
       /bin/bash -c "wait-for.sh -t 0 -q origin-bridge:5000 --
       echo 'origin-bridge is available, starting origin-dapp' &&
-      source export-swarm.sh /app/ipsrepo/config &&
+      cp /app/.env /app/.env.new &&
+      set-ipfs-swarm.sh /app/ipfsrepo/config /app/.env.new &&
+      cp /app/.env.new /app/.env &&
       node_modules/.bin/webpack-dev-server --host 0.0.0.0"
     networks:
       - origin-develop
