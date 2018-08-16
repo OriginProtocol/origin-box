@@ -2,6 +2,9 @@ FROM node:9
 
 # Make wait-for.sh available
 COPY ./scripts/wait-for.sh /usr/local/bin
+# Add export-swarm.sh for setting IPFS_SWARM env var based on the Peer ID
+# of the OrbitDB IPFS server running in the orbit-db container
+COPY ./scripts/export-swarm.sh /usr/local/bin
 
 WORKDIR /app
 # Copy package.json and package-lock.json

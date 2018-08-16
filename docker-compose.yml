@@ -73,6 +73,7 @@ services:
     image: orbit-db
     volumes:
       - ./origin-bridge/js/messaging:/app/messaging
+      - ./ipfs/repo:/app/ipfsrepo
     command: node_modules/.bin/babel-node messaging/orbit_server.js --presets es2015
     ports:
       - "9012:9012"
@@ -153,11 +154,11 @@ services:
       - ./envfiles/origin-dapp.env:/app/.env
       - ./origin-js:/app/node_modules/origin
       - origin_js_node_modules:/app/node_modules/origin/node_modules
+      - ./ipfs/repo:./ipfsrepo
     depends_on:
       - orbit-db
       - origin-bridge
     environment:
-      - IPFS_SWARM=/ip4/127.0.0.1/tcp/9012/ws/ipfs/Qmefavfuv8FwWema5ShTanbK8FyhDXjr77hLMqJ6T4DdeK
       - MESSAGING_NAMESPACE=origin-box
     ports:
       - "3000:3000"
@@ -166,6 +167,7 @@ services:
       >
       /bin/bash -c "wait-for.sh -t 0 -q origin-bridge:5000 --
       echo 'origin-bridge is available, starting origin-dapp' &&
+      source export-swarm.sh /app/ipsrepo/config &&
       node_modules/.bin/webpack-dev-server --host 0.0.0.0"
     networks:
       - origin-develop
