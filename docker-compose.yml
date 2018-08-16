@@ -154,7 +154,7 @@ services:
       - ./envfiles/origin-dapp.env:/app/.env
       - ./origin-js:/app/node_modules/origin
       - origin_js_node_modules:/app/node_modules/origin/node_modules
-      - ./ipfs/repo:./ipfsrepo
+      - ./ipfs/repo:/app/ipfsrepo
     depends_on:
       - orbit-db
       - origin-bridge
