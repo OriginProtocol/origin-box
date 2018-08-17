@@ -171,9 +171,9 @@ services:
       >
       /bin/bash -c "wait-for.sh -t 0 -q origin-bridge:5000 --
       echo 'origin-bridge is available, starting origin-dapp' &&
-      cp /app/.env /app/.env.new &&
-      set-ipfs-swarm.sh /app/ipfsrepo/config /app/.env.new &&
-      cp /app/.env.new /app/.env &&
+      cp /app/.env /tmp/.env.new &&
+      set-ipfs-swarm.sh /app/ipfsrepo/config /tmp/.env.new &&
+      cp /tmp/.env.new /app/.env &&
       node_modules/.bin/webpack-dev-server --host 0.0.0.0"
     networks:
       - origin-develop
