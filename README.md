@@ -71,8 +71,10 @@ docker-compose -f docker-compose-web.yml down
 Spawn a shell (command line) in a container:
 
 	docker exec -ti <container_name> /bin/bash
-
-Restart DApp (needed after changing branches):
+	docker exec -ti origin-dapp /bin/bash
+	docker exec -ti origin-js /bin/bash
+	
+Restart DApp (needed after changing branches). In a new terminal window:
 
 	docker-compose restart origin-dapp
 
@@ -118,16 +120,25 @@ and similarly for origin-bridge:
 
 ## Troubleshooting
 
-### Packages not found
+### Module not found errors
 
-There is a known issue with `docker-compose`. [Temporary workaround instructions are in this issue](https://github.com/OriginProtocol/origin-box/issues/34).
+There is a known issue with `docker-compose` and the use of volumes for handling dependencies. For more information refer to the [issue on this repository.](https://github.com/OriginProtocol/origin-box/issues/34)
 
-To remove all docker containers and volumes and start from scratch:
+If you encounter a `Module not found` error from `origin-dapp` running the following should resolve the issue:
 
-1. `docker-compose down`
-2. `docker system prune -a`
-3. `docker volume prune`
-4. `./install.sh -e origin`
+	docker-compose down; docker-compose build origin-dapp; docker-compose up
+
+If this does not resolve the issue, or the error is from `origin-js`, removing all docker containers and volumes and starting from scratch will resolve it:
+
+	./install.sh -e origin -c
+
+### Elasticsearch fails to start with virtual memory error
+
+The development stack includes an Elasticsearch container which may require an increase in the mmap counts for your OS. On Linux this can be achieved by running:
+
+	sysctl -w vm.max_map_count=262144
+
+For more information, see this [link.](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html)
 
 ### Port errors
 

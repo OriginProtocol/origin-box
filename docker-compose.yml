@@ -4,9 +4,8 @@ networks:
   origin-develop:
 
 volumes:
-  contracts:  # Compiled contracts
   origin_js_node_modules:
-  origin_dapp_node_modules:
+  contracts:  # Compiled contracts
   flask_session: # Flask session persistence
   pg_data:
 
@@ -34,17 +33,21 @@ services:
     networks:
       - origin-develop
 
-# elasticsearch:
-#   image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
-#   container_name: elasticsearch
-#   ports:
-#     - "9200:9200"
-#   environment:
-#     ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-#   ports:
-#     - "9200:9200"
-#   networks:
-#     - origin-develop
+  elasticsearch:
+    container_name: elasticsearch
+    image: elasticsearch
+    build:
+      context: .
+      dockerfile: dockerfiles/elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      network.bind_host: 0
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    ports:
+      - "9200:9200"
+    networks:
+      - origin-develop
 
   origin-js:
     container_name: origin-js
@@ -61,7 +64,10 @@ services:
       - "8080:8080" # IPFS gateway
       - "8081:8081" # Tests
       - "8545:8545" # Blockchain
-    command: node scripts/build.js serve
+    # Run npm install on every container start to avoid volumes issue
+    # https://github.com/docker/compose/issues/4337
+    command: >
+      /bin/bash -c "npm install && node scripts/build.js serve"
     networks:
       - origin-develop
 
@@ -147,12 +153,18 @@ services:
       context: .
       dockerfile: dockerfiles/origin-dapp
     volumes:
-      - ./origin-dapp:/app
-      # Don't overwrite the installed node_modules
-      - origin_dapp_node_modules:/app/node_modules
+      # Mount each directory of origin-dapp separately so that the
+      # node_modules doesn't require the volume trick which introduces
+      # an issue with package.json dependencies not being updated on
+      # container rebuild
+      - ./origin-dapp/src:/app/src
+      - ./origin-dapp/translations:/app/translations
+      - ./origin-dapp/public:/app/public
+      - ./origin-dapp/webpack.config.js:/app/webpack.config.js
       # Set the envfile from the local envfile
       - ./envfiles/origin-dapp.env:/app/.env
-      - ./origin-js:/app/node_modules/origin
+      # Mount compiled origin-js inside node modules
+      - ./origin-js/dist:/app/node_modules/origin/dist
       - origin_js_node_modules:/app/node_modules/origin/node_modules
       - ./ipfs/repo:/app/ipfsrepo
     depends_on:
@@ -174,6 +186,6 @@ services:
       cp /app/.env /tmp/.env.new &&
       set-ipfs-swarm.sh /app/ipfsrepo/config /tmp/.env.new &&
       cp /tmp/.env.new /app/.env &&
-      node_modules/.bin/webpack-dev-server --host 0.0.0.0"
+      node_modules/.bin/webpack-dev-server --host 0.0.0.0 --watch-poll 500"
     networks:
       - origin-develop
