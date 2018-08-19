@@ -86,7 +86,6 @@ services:
     environment:
       - MESSAGING_IPFS_WS_ADDRESS=/ip4/0.0.0.0/tcp/9012/ws
       - MESSAGING_NAMESPACE=dev
-      - MESSAGING_IPFS_AUTH_TOKEN=
     networks:
       - origin-develop
 
@@ -172,6 +171,7 @@ services:
       - origin-bridge
     environment:
       - MESSAGING_NAMESPACE=dev
+      - MESSAGING_ACCOUNT=
     ports:
       - "3000:3000"
     command:
