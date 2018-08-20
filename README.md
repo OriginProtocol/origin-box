@@ -39,7 +39,7 @@ Origin Box has several intended use cases:
 
 ![install.sh](https://raw.githubusercontent.com/OriginProtocol/origin-box/master/screenshot.png)
 
-The install script will clone the origin repositories into subdirectories and checkout the laatest stable release tags. You can then `cd` into any one of them and run `git` commands as you would in any other cloned repository. For example, if you would like to run the bleeding-edge versions that are under active development, you would need to checkout the master branch in each repository:
+The install script will clone the origin repositories into subdirectories and checkout the stable branches. You can then `cd` into any one of them and run `git` commands as you would in any other cloned repository. For example, if you would like to run the bleeding-edge versions that are under active development, you would need to checkout the master branch in each repository:
 
 ```
 # to explore active development
