@@ -159,7 +159,7 @@ For more information, see this [link.](https://www.elastic.co/guide/en/elasticse
 
 ### Docker Container exited with code 137
 
-If a container is failing with code 137 it could be that it has incountered Out Of Memory error. To fix this dedicate more memory to Docker [see this link](https://www.petefreitag.com/item/848.cfm)
+If a container is failing with code 137 it could be that it has encountered Out Of Memory error. To fix this dedicate more memory to Docker [see this link](https://www.petefreitag.com/item/848.cfm).
 
 ### Port errors
 
