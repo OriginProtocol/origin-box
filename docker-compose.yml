@@ -50,6 +50,8 @@ services:
       - ./origin-js:/app
       - origin_js_node_modules:/app/node_modules
       - contracts:/app/contracts/build/contracts
+    environment:
+      - NODE_ENV=development
     ports:
       - "5002:5002" # API
       - "8080:8080" # IPFS gateway
@@ -127,8 +129,7 @@ services:
       - orbit-db
       - origin-bridge
     environment:
-      - MESSAGING_NAMESPACE=dev
-      - MESSAGING_ACCOUNT=
+      - NODE_ENV=development
     ports:
       - "3000:3000"
     command:
