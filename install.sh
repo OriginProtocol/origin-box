@@ -93,6 +93,9 @@ function install_origin_environment() {
 	run_step "Configuring database" \
 		docker-compose exec origin-bridge flask db upgrade
 
+	run_step "Waiting for container startup" \
+		docker-compose exec origin-dapp wait-for.sh -t 0 -q origin-dapp:3000
+
 	print_origin_finish
 }
 
