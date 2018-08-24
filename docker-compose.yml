@@ -57,11 +57,12 @@ services:
       - "8080:8080" # IPFS gateway
       - "8081:8081" # Tests
       - "8545:8545" # Blockchain
-      - "4000:4000" # Apollo server 
+      - "4000:4000" # Apollo server
     # Run npm install on every container start to avoid volumes issue
     # https://github.com/docker/compose/issues/4337
     command: >
-      /bin/bash -c "npm install && node scripts/build.js serve"
+      /bin/bash -c "npm install --quiet --no-progress &&
+      node scripts/build.js serve"
     networks:
       - origin-develop
 
@@ -74,12 +75,12 @@ services:
     volumes:
       - ./origin-bridge/js/messaging:/app/messaging
       - ./ipfs/repo:/app/ipfsrepo
-    command: node_modules/.bin/babel-node messaging/orbit_server.js --presets es2015
     ports:
       - "9012:9012"
     environment:
       - MESSAGING_IPFS_WS_ADDRESS=/ip4/0.0.0.0/tcp/9012/ws
       - MESSAGING_NAMESPACE=dev
+    command: node_modules/.bin/babel-node messaging/orbit_server.js --presets es2015
     networks:
       - origin-develop
 
