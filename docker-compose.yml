@@ -111,14 +111,8 @@ services:
       context: .
       dockerfile: dockerfiles/origin-dapp
     volumes:
-      # Mount each directory of origin-dapp separately so that the
-      # node_modules doesn't require the volume trick which introduces
-      # an issue with package.json dependencies not being updated on
-      # container rebuild
-      - ./origin-dapp/src:/app/src
-      - ./origin-dapp/translations:/app/translations
-      - ./origin-dapp/public:/app/public
-      - ./origin-dapp/webpack.config.js:/app/webpack.config.js
+      # Mount origin-dapp inside the container
+      - ./origin-dapp:/app
       # Set the envfile from the local envfile
       - ./envfiles/origin-dapp.env:/app/.env
       # Mount compiled origin-js inside node modules
@@ -133,17 +127,18 @@ services:
     ports:
       - "3000:3000"
     command:
-      # Waits for origin-bridge to start then uses a script to read the orbit-db
-      # container peer id and write the configuration key/pair to the .env file.
+      # Waits for origin-js and orbit-db to start then uses a script to read the
+      # orbit-db container peer id and write the configuration key/pair to the
+      # .env file.
       #
       # The copying is necessary because the .env file is mounted as a volume
       # and the inode is not allowed to change.
       >
-      /bin/bash -c "wait-for.sh -t 0 -q origin-bridge:5000 --
-      echo 'origin-bridge is available, starting origin-dapp' &&
+      /bin/bash -c "wait-for.sh -t 0 -q origin-js:8081 --
       cp /app/.env /tmp/.env.new &&
       set-ipfs-swarm.sh /app/ipfsrepo/config /tmp/.env.new &&
       cp /tmp/.env.new /app/.env &&
+      npm install --quiet --no-progress &&
       node_modules/.bin/webpack-dev-server --host 0.0.0.0 --watch-poll 500"
     networks:
       - origin-develop
