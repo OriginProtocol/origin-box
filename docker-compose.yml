@@ -29,7 +29,7 @@ services:
     image: elasticsearch
     build:
       context: .
-      dockerfile: dockerfiles/elasticsearch
+      dockerfile: dockerfiles/development/elasticsearch
     ports:
       - "9200:9200"
     environment:
@@ -45,7 +45,7 @@ services:
     image: origin-js
     build:
       context: .
-      dockerfile: dockerfiles/origin-js
+      dockerfile: dockerfiles/development/origin-js
     volumes:
       - ./origin-js:/app
       - origin_js_node_modules:/app/node_modules
@@ -67,7 +67,7 @@ services:
     container_name: orbit-db
     build:
       context: .
-      dockerfile: dockerfiles/orbit-db
+      dockerfile: dockerfiles/development/orbit-db
     image: orbit-db
     volumes:
       - ./origin-bridge/js/messaging:/app/messaging
@@ -85,7 +85,7 @@ services:
     container_name: origin-bridge
     build:
       context: .
-      dockerfile: dockerfiles/origin-bridge
+      dockerfile: dockerfiles/development/origin-bridge
     image: origin-bridge
     volumes:
       - ./origin-bridge:/app
@@ -107,7 +107,7 @@ services:
     container_name: origin-dapp
     build:
       context: .
-      dockerfile: dockerfiles/origin-dapp
+      dockerfile: dockerfiles/development/origin-dapp
     volumes:
       # Mount each directory of origin-dapp separately so that the
       # node_modules doesn't require the volume trick which introduces
