@@ -1,0 +1,10 @@
+FROM node:9
+WORKDIR /app
+# Copy package.json and package-lock.json
+COPY ./origin-bridge/package*.json /app/
+COPY ./origin-bridge/js/* /app
+ENV NODE_ENV development
+ENV MESSAGING_IPFS_WS_ADDRESS=/ip4/0.0.0.0/tcp/9012/ws
+ENV MESSAGING_NAMESPACE=staging
+RUN npm install --quiet --no-progress
+CMD ["node_modules/.bin/babel-node", "/app/orbit_server.js", "--presets", "es2015"]
