@@ -29,7 +29,7 @@ services:
     image: elasticsearch
     build:
       context: .
-      dockerfile: dockerfiles/development/elasticsearch
+      dockerfile: containers/dockerfiles/development/elasticsearch
     ports:
       - "9200:9200"
     environment:
@@ -45,7 +45,7 @@ services:
     image: origin-js
     build:
       context: .
-      dockerfile: dockerfiles/development/origin-js
+      dockerfile: containers/dockerfiles/development/origin-js
     volumes:
       - ./origin-js:/app
       - origin_js_node_modules:/app/node_modules
@@ -70,7 +70,7 @@ services:
     container_name: orbit-db
     build:
       context: .
-      dockerfile: dockerfiles/development/orbit-db
+      dockerfile: containers/dockerfiles/development/orbit-db
     image: orbit-db
     volumes:
       - ./origin-bridge/js/messaging:/app/messaging
@@ -88,12 +88,12 @@ services:
     container_name: origin-bridge
     build:
       context: .
-      dockerfile: dockerfiles/development/origin-bridge
+      dockerfile: containers/dockerfiles/development/origin-bridge
     image: origin-bridge
     volumes:
       - ./origin-bridge:/app
       # Set the envfile from the local envfile
-      - ./envfiles/origin-bridge.env:/app/.env
+      - ./containers/envfiles/origin-bridge.env:/app/.env
       - flask_session:/app/flask_session
     depends_on:
       - postgres
@@ -110,12 +110,12 @@ services:
     container_name: origin-dapp
     build:
       context: .
-      dockerfile: dockerfiles/development/origin-dapp
+      dockerfile: containers/dockerfiles/development/origin-dapp
     volumes:
       # Mount origin-dapp inside the container
       - ./origin-dapp:/app
       # Set the envfile from the local envfile
-      - ./envfiles/origin-dapp.env:/app/.env
+      - ./containers/envfiles/origin-dapp.env:/app/.env
       # Mount compiled origin-js inside node modules
       - ./origin-js:/usr/local/lib/node_modules/origin
       - origin_js_node_modules:/usr/local/lib/node_modules/origin/node_modules

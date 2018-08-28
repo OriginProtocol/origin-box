@@ -1,0 +1,23 @@
+# Origin-js build
+FROM node:9 as origin-js-build
+WORKDIR /app
+COPY ./origin-js /app
+ENV NODE_ENV development
+RUN npm install
+RUN npm build
+
+# Origin-dapp build with previously built origin-js
+FROM node:9 as build
+WORKDIR /app
+COPY ./origin-dapp /app
+COPY --from=origin-js-build /app/ /usr/local/lib/node_modules/origin/
+ENV MESSAGING_NAMESPACE staging
+ENV PROVIDER_URL https://rinkeby.infura.io/emIXjs9eDuy57IlTYsIP
+ENV NODE_ENV production
+RUN npm install
+RUN npm run build
+
+# Nginx to service static files
+FROM nginx:1.15.2
+COPY --from=build /app/build /usr/share/nginx/html
+CMD ["nginx", "-g", "daemon off;"]
