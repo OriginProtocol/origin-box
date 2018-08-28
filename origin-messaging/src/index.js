@@ -5,7 +5,8 @@ import Keystore from 'orbit-db-keystore'
 import url from 'url'
 
 const Log = require('ipfs-log')
-const IpfsApi = require('ipfs-api')
+const IPFSApi = require('ipfs-api')
+const IPFS = require('ipfs')
 
 import * as config from './config'
 import InsertOnlyKeystore from './insert-only-keystore'
@@ -16,8 +17,6 @@ import {
   verifyMessageSignature,
   verifyRegistrySignature
 } from './verify'
-
-const ipfs = IpfsApi(config.IPFS_ADDRESS, config.IPFS_PORT)
 
 process.env.LOG = 'DEBUG'
 
@@ -53,11 +52,11 @@ function joinConversationKey(converser1, converser2) {
   return [converser1, converser2].sort().join('-')
 }
 
-function onConverse(roomDb, conversee, payload){
-    const converser = payload.key
-    console.log(`Started conversation between: ${converser} and ${conversee}`)
-    const writers = [converser, conversee].sort()
-    startRoom(roomDb, config.CONV, 'eventlog', writers)
+function onConverse(roomDb, conversee, payload) {
+  const converser = payload.key
+  console.log(`Started conversation between: ${converser} and ${conversee}`)
+  const writers = [converser, conversee].sort()
+  startRoom(roomDb, config.CONV, 'eventlog', writers)
 }
 
 function handleGlobalRegistryWrite(convInitDb, payload) {
@@ -76,7 +75,7 @@ function rebroadcastOnReplicate(DB, db){
   })
 }
 
-async function pinIPFS(entry, signature, key) {
+async function pinIPFS(ipfs, entry, signature, key) {
   if (ipfs.pin && ipfs.pin.add) {
     const hash = await saveToIpfs(ipfs, entry, signature, key)
     if (hash) {
@@ -126,8 +125,7 @@ async function saveToIpfs(ipfs, entry, signature, key) {
     })
 }
 
-async function snapshotDB(db)
-{
+async function snapshotDB(db) {
   const unfinished = db._replicator.getQueue()
   const snapshotData = db._oplog.toSnapshot()
 
@@ -136,8 +134,7 @@ async function snapshotDB(db)
   console.log('Saved snapshot:', snapshotData.id, ' queue:', unfinished.length)
 }
 
-async function loadSnapshotDB(db)
-{
+async function loadSnapshotDB(db) {
   const queue = await db._cache.get('queue')
   db.sync(queue || [])
   const snapshotData = await db._cache.get('raw_snapshot')
@@ -161,8 +158,7 @@ async function loadSnapshotDB(db)
   db.events.emit('ready', db.address.toString(), db._oplog.heads)
 }
 
-async function startSnapshotDB(db)
-{
+async function startSnapshotDB(db) {
   await loadSnapshotDB(db)
 }
 
@@ -188,7 +184,7 @@ async function _onPeerConnected(address, peer)
     getStore(address).events.emit('peer', peer)
 }
 
-const startOrbitDbServer = async () => {
+const startOrbitDbServer = async (ipfs) => {
   // Remap the peer connected to ours which will wait before exchanging heads
   // with the same peer
   const orbitGlobal = new OrbitDB(
@@ -223,15 +219,13 @@ const startOrbitDbServer = async () => {
       onConverse(orbitGlobal, ethAddress, message.payload)
     }
   )
-
   orbitGlobal.keystore.registerSignVerify(
     config.CONV, undefined, verifyMessageSignature(globalRegistry)
   )
-
   console.log(`Orbit registry started...: ${globalRegistry.id}`)
 
   globalRegistry.events.on('ready', (address) => {
-    console.log(`Ready... ${globalRegistry.all()}`)
+    console.log(`Ready...`)
   })
 
   // testing it's best to drop this for now
@@ -240,15 +234,41 @@ const startOrbitDbServer = async () => {
 }
 
 const main = async () => {
-  const ipfsId = ipfs.id()
+  if (config.IPFS_ADDRESS) {
+    // Server configured via env
+    const ipfs = IPFSApi(config.IPFS_ADDRESS, config.IPFS_PORT)
+    const ipfsId = ipfs.id()
 
-  await ipfsId.then((id) => {
-    console.log(`Connected to IPFS server: ${id}`)
-    startOrbitDbServer()
-  }).catch((error) => {
-    console.log(`Could not connect to IPFS at ${config.IPFS_ADDRESS}:${config.IPFS_PORT}...`)
-    setTimeout(main, 5000)
-  })
+    await ipfsId.then((peer) => {
+      console.log(`Connected to IPFS server: ${peer.id}`)
+      startOrbitDbServer(ipfs)
+    }).catch((error) => {
+      console.log(`Could not connect to IPFS at ${config.IPFS_ADDRESS}:${config.IPFS_PORT}...`)
+      setTimeout(main, 5000)
+    })
+  } else {
+    // Create our own IPFS server
+    console.log(`Creating IPFS server`)
+
+    const ipfs = new IPFS({
+      repo: "./ipfs",
+      EXPERIMENTAL: {
+        pubsub: true,
+      },
+      config: {
+        Bootstrap: [],
+        Addresses: {
+         Swarm: [config.IPFS_WS_ADDRESS]
+        }
+      }
+    })
+
+    ipfs.on('error', (e) => console.error(e))
+    ipfs.on('ready', async () => {
+      ipfs.setMaxListeners(2048)
+      startOrbitDbServer(ipfs)
+    })
+  }
 }
 
 main()

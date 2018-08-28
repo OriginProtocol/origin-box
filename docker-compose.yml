@@ -1,8 +1,6 @@
 version: "3"
 
 networks:
-  origin-ipfs:
-  origin-messaging-ipfs:
   origin-box:
 
 volumes:
@@ -70,9 +68,9 @@ services:
 
   origin-messaging-ipfs:
     container_name: origin-messaging-ipfs
-    image: ipfs/go-ipfs:latest
+    image: ipfs/go-ipfs:v0.4.17
     networks:
-      - origin-messaging-ipfs
+      - origin-box
     ports:
       - "5002:5002"
       - "8080:8080"
@@ -80,7 +78,7 @@ services:
       - IPFS_PATH=/ipfs
     volumes:
       - ./containers/.ipfs:/ipfs
-    command: "daemon --enable-pubsub-experiment"
+    command: "daemon --migrate --enable-pubsub-experiment"
 
   origin-messaging:
     container_name: origin-messaging
@@ -91,7 +89,6 @@ services:
     depends_on:
       - origin-messaging-ipfs
     networks:
-      - origin-messaging-ipfs
       - origin-box
     ports:
       - "9012:9012"
@@ -140,7 +137,7 @@ services:
       # Mount compiled origin-js inside node modules
       - ./origin-js:/usr/local/lib/node_modules/origin
       - origin_js_node_modules:/usr/local/lib/node_modules/origin/node_modules
-      - ./ipfs/repo:/app/ipfsrepo
+      - ./containers/.ipfs/repo:/ipfs
     depends_on:
       - origin-messaging
       - origin-bridge
@@ -164,5 +161,4 @@ services:
       npm link origin &&
       node_modules/.bin/webpack-dev-server --host 0.0.0.0 --watch-poll 500"
     networks:
-      - origin-ipfs
       - origin-box
