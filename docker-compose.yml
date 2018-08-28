@@ -135,7 +135,7 @@ services:
       # Mount compiled origin-js inside node modules
       - ./origin-js:/usr/local/lib/node_modules/origin
       - origin_js_node_modules:/usr/local/lib/node_modules/origin/node_modules
-      - ./containers/.ipfs/repo:/ipfs
+      - ./containers/.ipfs:/ipfs
     depends_on:
       - origin-messaging
       - origin-bridge
