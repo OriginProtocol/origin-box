@@ -5,7 +5,6 @@ networks:
 
 volumes:
   origin_js_node_modules:
-  contracts:  # Compiled contracts
   flask_session: # Flask session persistence
   pg_data:
 
@@ -49,7 +48,6 @@ services:
     volumes:
       - ./origin-js:/app
       - origin_js_node_modules:/app/node_modules
-      - contracts:/app/contracts/build/contracts
     environment:
       - NODE_ENV=development
     ports:
