@@ -1,7 +1,9 @@
 version: "3"
 
 networks:
-  origin-develop:
+  origin-ipfs:
+  origin-messaging-ipfs:
+  origin-box:
 
 volumes:
   origin_js_node_modules:
@@ -22,7 +24,7 @@ services:
       - POSTGRES_PASSWORD=origin
       - POSTGRES_DB=origin_bridge
     networks:
-      - origin-develop
+      - origin-box
 
   elasticsearch:
     container_name: elasticsearch
@@ -38,7 +40,7 @@ services:
     ports:
       - "9200:9200"
     networks:
-      - origin-develop
+      - origin-box
 
   origin-js:
     container_name: origin-js
@@ -53,8 +55,8 @@ services:
     environment:
       - NODE_ENV=development
     ports:
-      - "5002:5002" # API
-      - "8080:8080" # IPFS gateway
+      # - "5002:5002" # API
+      # - "8080:8080" # IPFS gateway
       - "8081:8081" # Tests
       - "8545:8545" # Blockchain
       - "4000:4000" # Apollo server
@@ -64,25 +66,44 @@ services:
       /bin/bash -c "npm install --quiet --no-progress &&
       node scripts/build.js serve"
     networks:
-      - origin-develop
+      - origin-box
 
-  orbit-db:
-    container_name: orbit-db
+  origin-messaging-ipfs:
+    container_name: origin-messaging-ipfs
+    image: ipfs/go-ipfs:latest
+    networks:
+      - origin-messaging-ipfs
+    ports:
+      - "5002:5002"
+      - "8080:8080"
+    environment:
+      - IPFS_PATH=/ipfs
+    volumes:
+      - ./containers/.ipfs:/ipfs
+    command: "daemon --enable-pubsub-experiment"
+
+  origin-messaging:
+    container_name: origin-messaging
     build:
       context: .
-      dockerfile: containers/dockerfiles/development/orbit-db
-    image: orbit-db
-    volumes:
-      - ./origin-bridge/js/messaging:/app/messaging
-      - ./ipfs/repo:/app/ipfsrepo
+      dockerfile: containers/dockerfiles/development/origin-messaging
+    image: origin-messaging
+    depends_on:
+      - origin-messaging-ipfs
+    networks:
+      - origin-messaging-ipfs
+      - origin-box
     ports:
       - "9012:9012"
+    volumes:
+      - ./origin-messaging/src:/app/src
     environment:
-      - MESSAGING_IPFS_WS_ADDRESS=/ip4/0.0.0.0/tcp/9012/ws
+      - IPFS_ADDRESS=origin-messaging-ipfs
       - MESSAGING_NAMESPACE=dev
-    command: node_modules/.bin/babel-node messaging/orbit_server.js --presets es2015
-    networks:
-      - origin-develop
+    # TODO Add nodemon
+    # Waits for origin-messaging-ipfs to be available before starting
+    command: /bin/bash -c "wait-for.sh -t 0 -q origin-messaging-ipfs:5001 --
+      node_modules/.bin/babel-node src/index.js --presets es2015"
 
   origin-bridge:
     container_name: origin-bridge
@@ -104,7 +125,7 @@ services:
       - FLASK_DEBUG=1
     command: flask run --host=0.0.0.0
     networks:
-      - origin-develop
+      - origin-box
 
   origin-dapp:
     container_name: origin-dapp
@@ -121,26 +142,27 @@ services:
       - origin_js_node_modules:/usr/local/lib/node_modules/origin/node_modules
       - ./ipfs/repo:/app/ipfsrepo
     depends_on:
-      - orbit-db
+      - origin-messaging
       - origin-bridge
     environment:
       - NODE_ENV=development
     ports:
       - "3000:3000"
     command:
-      # Waits for origin-js and orbit-db to start then uses a script to read the
-      # orbit-db container peer id and write the configuration key/pair to the
-      # .env file.
+      # Waits for origin-js and origin-messaging-ipfs to start then uses a
+      # script to read the origin-messaging-ipfs container peer id and write the
+      # configuration key/pair to the .env file.
       #
       # The copying is necessary because the .env file is mounted as a volume
       # and the inode is not allowed to change.
       >
       /bin/bash -c "wait-for.sh -t 0 -q origin-js:8081 --
       cp /app/.env /tmp/.env.new &&
-      set-ipfs-swarm.sh /app/ipfsrepo/config /tmp/.env.new &&
+      set-ipfs-swarm.sh /ipfs/config /tmp/.env.new &&
       cp /tmp/.env.new /app/.env &&
       npm install --quiet --no-progress &&
       npm link origin &&
       node_modules/.bin/webpack-dev-server --host 0.0.0.0 --watch-poll 500"
     networks:
-      - origin-develop
+      - origin-ipfs
+      - origin-box
