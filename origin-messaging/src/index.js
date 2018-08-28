@@ -243,7 +243,7 @@ const main = async () => {
       console.log(`Connected to IPFS server: ${peer.id}`)
       startOrbitDbServer(ipfs)
     }).catch((error) => {
-      console.log(`Could not connect to IPFS at ${config.IPFS_ADDRESS}:${config.IPFS_PORT}...`)
+      console.log(`Connection error ${config.IPFS_ADDRESS}:${config.IPFS_PORT}`)
       setTimeout(main, 5000)
     })
   } else {
