@@ -137,6 +137,12 @@ and similarly for origin-bridge:
 
 ## Troubleshooting
 
+### Git push asks for credentials
+
+The default is to clone repositories using HTTPS. If you have a SSH key setup and want to use that to push code to GitHub you will need to update the remotes for the repository. For example:
+
+	git remote set-url origin git@github.com:OriginProtocol/origin-js.git
+
 ### Module not found errors
 
 There is a known issue with `docker-compose` and the use of volumes for handling dependencies. For more information refer to the [issue on this repository.](https://github.com/OriginProtocol/origin-box/issues/34)
