@@ -139,6 +139,7 @@ services:
       - origin_js_node_modules:/usr/local/lib/node_modules/origin/node_modules
       - ./containers/.ipfs:/ipfs
     depends_on:
+      - origin-js
       - origin-messaging
       - origin-bridge
     environment:
@@ -153,12 +154,10 @@ services:
       # The copying is necessary because the .env file is mounted as a volume
       # and the inode is not allowed to change.
       >
-      /bin/bash -c "wait-for.sh -t 0 -q origin-js:8081 --
-      cp /app/.env /tmp/.env.new &&
-      set-ipfs-swarm.sh /ipfs/config /tmp/.env.new &&
-      cp /tmp/.env.new /app/.env &&
+      /bin/bash -c "source set-ipfs-swarm.sh /ipfs/config &&
       npm install --quiet --no-progress &&
       npm link origin &&
+      wait-for.sh -t 0 -q origin-js:8081 --
       node_modules/.bin/webpack-dev-server --host 0.0.0.0 --watch-poll 500"
     networks:
       - default
