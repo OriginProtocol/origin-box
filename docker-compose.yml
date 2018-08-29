@@ -1,7 +1,7 @@
 version: "3"
 
 networks:
-  origin-box:
+  default:
 
 volumes:
   origin_js_node_modules:
@@ -21,7 +21,7 @@ services:
       - POSTGRES_PASSWORD=origin
       - POSTGRES_DB=origin_bridge
     networks:
-      - origin-box
+      - default
 
   elasticsearch:
     container_name: elasticsearch
@@ -37,7 +37,7 @@ services:
     ports:
       - "9200:9200"
     networks:
-      - origin-box
+      - default
 
   origin-js:
     container_name: origin-js
@@ -62,7 +62,7 @@ services:
       /bin/bash -c "npm install --quiet --no-progress &&
       node scripts/build.js serve"
     networks:
-      - origin-box
+      - default
 
   origin-messaging-ipfs:
     container_name: origin-messaging-ipfs
@@ -71,7 +71,7 @@ services:
       context: .
       dockerfile: containers/dockerfiles/development/origin-messaging-ipfs
     networks:
-      - origin-box
+      - default
     ports:
       - "5002:5002"
       - "8080:8080"
@@ -122,7 +122,7 @@ services:
       - FLASK_DEBUG=1
     command: flask run --host=0.0.0.0
     networks:
-      - origin-box
+      - default
 
   origin-dapp:
     container_name: origin-dapp
@@ -161,4 +161,4 @@ services:
       npm link origin &&
       node_modules/.bin/webpack-dev-server --host 0.0.0.0 --watch-poll 500"
     networks:
-      - origin-box
+      - default
