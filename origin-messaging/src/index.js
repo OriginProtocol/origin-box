@@ -265,7 +265,7 @@ const main = async () => {
 
     ipfs.on('error', (e) => console.error(e))
     ipfs.on('ready', async () => {
-      ipfs.setMaxListeners(2048)
+      ipfs.setMaxListeners(config.IPFS_MAX_CONNECTIONS)
       startOrbitDbServer(ipfs)
     })
   }
