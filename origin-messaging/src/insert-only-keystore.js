@@ -43,7 +43,10 @@ class InsertOnlyKeystore {
       const message = JSON.parse(data)
       const obj = this.getSignVerify(message.id)
 
-      console.log(`Verifying message: ${message}, ${signature}`)
+      console.log(
+        `Verifying message: ${message.id},
+        Signature: ${signature}`
+      )
 
       if (obj && obj.verifyFunc) {
         if (message.payload.op == 'PUT' || message.payload.op == 'ADD') {

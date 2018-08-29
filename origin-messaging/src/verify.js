@@ -34,11 +34,11 @@ function verifyConversers(conversee, keysMap){
 
     if ((parentKey && verifyAddress == parentKey.address) ||
         (converseeKey && verifyAddress == keysMap.get(conversee).address)) {
-      console.log(`
-        Verified conv init for ${conversee}
+      console.log(
+        `Verified conv init for ${conversee}
         Signature: ${contentObj.sign}
-        Signed with: ${verifyAddress}
-      `)
+        Signed with: ${verifyAddress}`
+      )
       return true
     }
     return false
@@ -47,11 +47,11 @@ function verifyConversers(conversee, keysMap){
 
 function verifyMessageSignature(keysMap) {
   return (signature, key, message, buffer) => {
-    console.log(`
-      Verify message: ${message}
+    console.log(
+      `Verify message: ${message.id}
       Key: ${key}
-      Signature: ${signature}
-    `)
+      Signature: ${signature}`
+    )
 
     const verifyAddress = web3.eth.accounts.recover(
       buffer.toString('utf8'),
@@ -76,11 +76,11 @@ function verifyRegistrySignature(signature, key, message) {
 
       const verifyPhAddress = web3.eth.accounts.recover(value.ph, value.phs)
       if (verifyPhAddress == value.address) {
-        console.log(`
-          Key verified: ${value.msg}
+        console.log(
+          `Key verified: ${value.msg}
           Signature: ${signature}
-          Signed with, ${verifyAddress}
-        `)
+          Signed with, ${verifyAddress}`
+        )
         return true
       }
     }
