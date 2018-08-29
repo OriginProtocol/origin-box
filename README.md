@@ -143,6 +143,8 @@ The default is to clone repositories using HTTPS. If you have a SSH key setup an
 
 	git remote set-url origin git@github.com:OriginProtocol/origin-js.git
 
+More information on setting remotes is available [here.](https://help.github.com/articles/changing-a-remote-s-url/)
+
 ### Module not found errors
 
 There is a known issue with `docker-compose` and the use of volumes for handling dependencies. For more information refer to the [issue on this repository.](https://github.com/OriginProtocol/origin-box/issues/34)
