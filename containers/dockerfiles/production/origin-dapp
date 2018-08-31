@@ -1,10 +1,21 @@
+# Origin-dapp build with previously built origin-js
 FROM node:9 as build
 WORKDIR /app
 COPY ./origin-dapp /app
-ENV NODE_ENV development
+
+ENV BRIDGE_SERVER_DOMAIN bridge.originprotocol.com
+ENV BRIDGE_SERVER_PROTOCOL https
+ENV IPFS_DOMAIN ipfs.originprotocol.com
+ENV IPFS_GATEWAY_PORT 443
+ENV IPFS_GATEWAY_PROTOCOL https
+ENV PROVIDER_URL https://rinkeby.infura.io/emIXjs9eDuy57IlTYsIP
+ENV MESSAGING_NAMESPACE production
+ENV NODE_ENV production
+
 RUN npm install
 RUN npm run build
 
+# Nginx to service static files
 FROM nginx:1.15.2
 COPY --from=build /app/build /usr/share/nginx/html
 CMD ["nginx", "-g", "daemon off;"]
