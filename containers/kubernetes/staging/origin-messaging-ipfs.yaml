@@ -15,23 +15,26 @@ spec:
   selector:
     app: origin-messaging-ipfs
 ---
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: origin-messaging-ipfs
   namespace: staging
   labels:
     name: origin-messaging-ipfs
 spec:
+  selector:
+    matchLabels:
+      app: origin-messaging-ipfs
+  serviceName: origin-messaging-ipfs
   replicas: 1
   template:
     metadata:
       labels:
-        run: origin-messaging-ipfs
         app: origin-messaging-ipfs
     spec:
       containers:
-      - name: ipfs
+      - name: origin-messaging-ipfs
         image: gcr.io/origin-214503/staging/origin-messaging-ipfs:latest
         ports:
         - containerPort: 5001
@@ -42,9 +45,15 @@ spec:
           protocol: TCP
         volumeMounts:
           - mountPath: /data/ipfs
-            name: ipfs-messaging-data
-      volumes:
-        - name: ipfs-messaging-data
-          gcePersistentDisk:
-            pdName: ipfs-messaging-data
-            fsType: ext4
+            name: staging-messaging-ipfs-data
+      restartPolicy: Always
+  volumeClaimTemplates:
+  - metadata:
+      name: staging-messaging-ipfs-data
+    spec:
+      accessModes:
+        - ReadWriteOnce  # Read-write for a single node only
+      storageClassName: "standard"
+      resources:
+        requests:
+          storage: 8Gi

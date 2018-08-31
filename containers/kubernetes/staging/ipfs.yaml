@@ -6,28 +6,31 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - name: "api"
+  - name: api
     port: 5001
-    protocol: "TCP"
-  - name: "gateway"
+    protocol: TCP
+  - name: gateway
     port: 8080
-    protocol: "TCP"
+    protocol: TCP
   selector:
     app: ipfs
 ---
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: ipfs
   namespace: staging
   labels:
     name: ipfs
 spec:
+  selector:
+    matchLabels:
+      app: ipfs
+  serviceName: ipfs
   replicas: 1
   template:
     metadata:
       labels:
-        run: ipfs
         app: ipfs
     spec:
       containers:
@@ -43,9 +46,15 @@ spec:
           protocol: "TCP"
         volumeMounts:
           - mountPath: /data/ipfs
-            name: ipfs-data
-      volumes:
-        - name: ipfs-data
-          gcePersistentDisk:
-            pdName: ipfs-data
-            fsType: ext4
+            name: staging-ipfs-data
+      restartPolicy: Always
+  volumeClaimTemplates:
+  - metadata:
+      name: staging-ipfs-data
+    spec:
+      storageClassName: "standard"
+      accessModes:
+        - ReadWriteOnce  # Read-write for a single node only
+      resources:
+        requests:
+          storage: 8Gi
