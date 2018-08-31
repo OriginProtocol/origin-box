@@ -14,7 +14,7 @@ spec:
         app: origin-messaging
     spec:
       containers:
-      - name: ipfs
+      - name: origin-messaging
         image: gcr.io/origin-214503/staging/origin-messaging:latest
         env:
           - name: IPFS_ADDRESS
