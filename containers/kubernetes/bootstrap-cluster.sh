@@ -18,6 +18,13 @@ kubectl create -f namespaces.yaml
 
 sleep 10
 
+# Install cert-manager for issuing SSL certificates through LetsEncrypt
+helm install stable/cert-manager --name cert-manager \
+	--namespace kube-system	\
+	--set rbac.create=true \
+	--set ingressShim.defaultIssuerName=letsencrypt-clusterissuer \
+	--set ingressShim.defaultIssuerKind=ClusterIssuer
+
 # The nginx-ingress controllers need separate names because helm requires
 # globally unique names and not unique names within the namespace
 # See https://github.com/helm/helm/issues/2060
@@ -40,12 +47,8 @@ helm install stable/nginx-ingress --name production \
 	--set rbac.create=true \
 	--set controller.service.loadBalancerIP="35.203.166.86"
 
-# Install cert-manager for issuing SSL certificates through LetsEncrypt
-helm install stable/cert-manager --name cert-manager \
-	--namespace kube-system	\
-	--set rbac.create=true \
-	--set ingressShim.defaultIssuerName=letsencrypt-staging \
-	--set ingressShim.defaultIssuerKind=ClusterIssuer
+# Wait for
+sleep 10
 
 # Add a ClusterIssuer using LetsEncrypt for cert-manager
 kubectl create -f letsencrypt-clusterissuer.yaml
