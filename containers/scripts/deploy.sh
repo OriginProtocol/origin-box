@@ -27,3 +27,8 @@ kubectl config current-context
 
 kubectl set image deployment/${KUBE_DEPLOYMENT_NAME} ${KUBE_DEPLOYMENT_CONTAINER_NAME}=gcr.io/${PROJECT_NAME}/${NAMESPACE}/${DOCKER_IMAGE_NAME}:$TRAVIS_COMMIT --namespace=${NAMESPACE}
 
+kubectl rollout status deployment/${KUBE_DEPLOYMENT_NAME}
+
+# Discord webhook
+
+# Deployed a new container for ${KUBE_DEPLOYMENT_NAME} (${TRAVIS_COMMIT_HASH}) to the ${NAMESPACE} environment
