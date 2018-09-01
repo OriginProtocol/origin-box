@@ -28,7 +28,7 @@ services:
     image: elasticsearch
     build:
       context: .
-      dockerfile: containers/dockerfiles/development/elasticsearch
+      dockerfile: development/dockerfiles/development/elasticsearch
     ports:
       - "9200:9200"
     environment:
@@ -44,7 +44,7 @@ services:
     image: origin-js
     build:
       context: .
-      dockerfile: containers/dockerfiles/development/origin-js
+      dockerfile: development/dockerfiles/development/origin-js
     volumes:
       - ./origin-js:/app
       - origin_js_node_modules:/app/node_modules
@@ -76,7 +76,7 @@ services:
     image: origin-messaging-ipfs
     build:
       context: .
-      dockerfile: containers/dockerfiles/development/origin-messaging-ipfs
+      dockerfile: development/dockerfiles/development/origin-messaging-ipfs
     networks:
       - default
     ports:
@@ -85,7 +85,7 @@ services:
     environment:
       - IPFS_PATH=/ipfs
     volumes:
-      - ./containers/.ipfs:/ipfs
+      - ./development/.ipfs:/ipfs
     command: "daemon --migrate --enable-pubsub-experiment"
 
   origin-messaging:
@@ -93,7 +93,7 @@ services:
     image: origin-messaging
     build:
       context: .
-      dockerfile: containers/dockerfiles/development/origin-messaging
+      dockerfile: development/dockerfiles/development/origin-messaging
     depends_on:
       - origin-messaging-ipfs
     networks:
@@ -113,12 +113,12 @@ services:
     container_name: origin-bridge
     build:
       context: .
-      dockerfile: containers/dockerfiles/development/origin-bridge
+      dockerfile: development/dockerfiles/development/origin-bridge
     image: origin-bridge
     volumes:
       - ./origin-bridge:/app
       # Set the envfile from the local envfile
-      - ./containers/envfiles/origin-bridge.env:/app/.env
+      - ./development/envfiles/origin-bridge.env:/app/.env
       - flask_session:/app/flask_session
     depends_on:
       - postgres
@@ -135,16 +135,16 @@ services:
     container_name: origin-dapp
     build:
       context: .
-      dockerfile: containers/dockerfiles/development/origin-dapp
+      dockerfile: development/dockerfiles/development/origin-dapp
     volumes:
       # Mount origin-dapp inside the container
       - ./origin-dapp:/app
       # Set the envfile from the local envfile
-      - ./containers/envfiles/origin-dapp.env:/app/.env
+      - ./development/envfiles/origin-dapp.env:/app/.env
       # Mount compiled origin-js inside node modules
       - ./origin-js:/usr/local/lib/node_modules/origin
       - origin_js_node_modules:/usr/local/lib/node_modules/origin/node_modules
-      - ./containers/.ipfs:/ipfs
+      - ./development/.ipfs:/ipfs
     depends_on:
       - origin-js
       - origin-messaging

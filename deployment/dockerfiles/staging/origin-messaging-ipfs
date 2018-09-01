@@ -1,0 +1,6 @@
+# See https://github.com/libp2p/go-floodsub/issues/93
+FROM ipfs/go-ipfs:v0.4.13
+
+# Replace startup script with our own
+# TODO find a better place for this script to live
+COPY /development/scripts/start-messaging-ipfs.sh /usr/local/bin/start_ipfs

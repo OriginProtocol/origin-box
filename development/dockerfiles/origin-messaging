@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY ./origin-messaging/package*.json /app/
-COPY ./containers/scripts/wait-for.sh /usr/local/bin
+COPY ./development/scripts/wait-for.sh /usr/local/bin
 
 ENV NODE_ENV development
 

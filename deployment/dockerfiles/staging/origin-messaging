@@ -4,8 +4,7 @@ WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY ./origin-messaging/package*.json /app/
-COPY ./containers/scripts/wait-for.sh /usr/local/bin
 
-ENV NODE_ENV development
+ENV NODE_ENV production
 
 RUN npm install --quiet --no-progress
