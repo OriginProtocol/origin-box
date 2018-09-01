@@ -6,7 +6,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
-    certmanager.k8s.io/cluster-issuer: letsencrypt-clusterissuer
+    certmanager.k8s.io/cluster-issuer: letsencrypt-staging
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   tls:
@@ -16,9 +16,6 @@ spec:
     - secretName: dapp-staging-cert
       hosts:
         - dapp.staging.originprotocol.com
-    - secretName: ipfs-staging-cert
-      hosts:
-        - gateway.staging.originprotocol.com
   rules:
   - host: bridge.staging.originprotocol.com
     http:
@@ -34,19 +31,6 @@ spec:
           backend:
             serviceName: origin-dapp
             servicePort: 80
-  - host: gateway.staging.originprotocol.com
-    http:
-      paths:
-        # Only allow the add API call through to the IPFS API
-        - path: /api/v0/add
-          backend:
-            serviceName: ipfs
-            servicePort: 5001
-        # IFPS read only gateway
-        - path: /
-          backend:
-            serviceName: ipfs
-            servicePort: 8080
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -56,7 +40,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
-    certmanager.k8s.io/cluster-issuer: letsencrypt-clusterissuer
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     # Increase timeouts for websockets
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
@@ -74,3 +58,35 @@ spec:
             backend:
               serviceName: origin-messaging-ipfs
               servicePort: 9012
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-ipfs
+  namespace: staging
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "POST"
+spec:
+  tls:
+    - secretName: ipfs-staging-cert
+      hosts:
+        - ipfs.staging.originprotocol.com
+  rules:
+    - host: ipfs.staging.originprotocol.com
+      http:
+        paths:
+          # Only allow the add API call through to the IPFS API
+          - path: /api/v0/add
+            backend:
+              serviceName: ipfs
+              servicePort: 5001
+          # IFPS read only gateway
+          - path: /
+            backend:
+              serviceName: ipfs
+              servicePort: 8080
