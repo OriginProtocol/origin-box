@@ -2,7 +2,7 @@ FROM node:9 as origin-js-build
 WORKDIR /app
 
 # Clone origin-js from master (development) branch
-RUN git clone https://github.com/OriginProtocol/origin-js.git /app
+RUN git clone https://github.com/OriginProtocol/origin-js.git --branch master /app
 RUN npm install --quiet --no-progress
 RUN npm run build
 
@@ -19,7 +19,9 @@ ENV BRIDGE_SERVER_DOMAIN=bridge.dev.originprotocol.com \
     MESSAGING_NAMESPACE=dev
 
 RUN npm install --quiet --no-progress
-COPY --from=origin-js-build /app/dist/ /app/node_modules/origin/
+# Overwrite installed origin-js with previously built version from master branch
+COPY --from=origin-js-build /app/dist/ /app/node_modules/origin/dist/
+COPY --from=origin-js-build /app/package.json /app/node_modules/origin/
 RUN NODE_ENV=production node_modules/.bin/webpack --progress --display errors-only
 
 # Nginx to service static files

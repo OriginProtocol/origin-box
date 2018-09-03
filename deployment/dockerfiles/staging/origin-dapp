@@ -19,7 +19,9 @@ ENV BRIDGE_SERVER_DOMAIN=bridge.staging.originprotocol.com \
     MESSAGING_NAMESPACE=staging
 
 RUN npm install --quiet --no-progress
-COPY --from=origin-js-build /app/dist/ /app/node_modules/origin/
+# Overwrite installed origin-js with previously built version from stable branch
+COPY --from=origin-js-build /app/dist/ /app/node_modules/origin/dist/
+COPY --from=origin-js-build /app/package.json /app/node_modules/origin/
 RUN NODE_ENV=production node_modules/.bin/webpack --progress --display errors-only
 
 # Nginx to service static files
