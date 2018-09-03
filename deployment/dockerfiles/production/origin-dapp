@@ -1,4 +1,3 @@
-# Origin-dapp build with previously built origin-js
 FROM node:9 as build
 WORKDIR /app
 COPY ./origin-dapp /app

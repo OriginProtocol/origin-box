@@ -1,0 +1,10 @@
+FROM node:9
+
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY ./origin-messaging/package*.json /app/
+
+ENV NODE_ENV production
+
+RUN npm install --quiet --no-progress
