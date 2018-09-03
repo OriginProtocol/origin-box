@@ -28,7 +28,7 @@ services:
     image: elasticsearch
     build:
       context: .
-      dockerfile: development/dockerfiles/development/elasticsearch
+      dockerfile: development/dockerfiles/elasticsearch
     ports:
       - "9200:9200"
     environment:
@@ -44,7 +44,7 @@ services:
     image: origin-js
     build:
       context: .
-      dockerfile: development/dockerfiles/development/origin-js
+      dockerfile: development/dockerfiles/origin-js
     volumes:
       - ./origin-js:/app
       - origin_js_node_modules:/app/node_modules
@@ -76,7 +76,7 @@ services:
     image: origin-messaging-ipfs
     build:
       context: .
-      dockerfile: development/dockerfiles/development/origin-messaging-ipfs
+      dockerfile: development/dockerfiles/origin-messaging-ipfs
     networks:
       - default
     ports:
@@ -93,7 +93,7 @@ services:
     image: origin-messaging
     build:
       context: .
-      dockerfile: development/dockerfiles/development/origin-messaging
+      dockerfile: development/dockerfiles/origin-messaging
     depends_on:
       - origin-messaging-ipfs
     networks:
@@ -113,7 +113,7 @@ services:
     container_name: origin-bridge
     build:
       context: .
-      dockerfile: development/dockerfiles/development/origin-bridge
+      dockerfile: development/dockerfiles/origin-bridge
     image: origin-bridge
     volumes:
       - ./origin-bridge:/app
@@ -135,7 +135,7 @@ services:
     container_name: origin-dapp
     build:
       context: .
-      dockerfile: development/dockerfiles/development/origin-dapp
+      dockerfile: development/dockerfiles/origin-dapp
     volumes:
       # Mount origin-dapp inside the container
       - ./origin-dapp:/app
