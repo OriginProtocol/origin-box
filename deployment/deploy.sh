@@ -8,6 +8,13 @@ elif [ "$TRAVIS_BRANCH" == "stable" ]; then
     NAMESPACE = "staging"
 fi
 
+# Replicate the structure of monorepo, this will be removed when move to
+# monorepo is complete
+mkdir ${DOCKER_IMAGE_NAME$}
+mv * ${DOCKER_IMAGE_NAME}
+# TODO remove branch when switch to master
+git clone https://github.com/OriginProtocol/origin-box --branch deployment --quiet ./
+
 docker build -t gcr.io/${PROJECT_NAME}/${NAMESPACE}/${DOCKER_IMAGE_NAME}:$TRAVIS_COMMIT .
 
 echo $GCLOUD_SERVICE_KEYG | base64 --decode -i > ${HOME}/gcloud-service-key.json
