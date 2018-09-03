@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ipfs
+  namespace: development
+spec:
+  type: NodePort
+  ports:
+  - name: api
+    port: 5001
+    protocol: TCP
+  - name: gateway
+    port: 8080
+    protocol: TCP
+  selector:
+    app: ipfs
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ipfs
+  namespace: development
+  labels:
+    name: ipfs
+spec:
+  selector:
+    matchLabels:
+      app: ipfs
+  serviceName: ipfs
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ipfs
+    spec:
+      containers:
+      - name: ipfs
+        image: "ipfs/go-ipfs:master"
+        command: ["/usr/local/bin/start_ipfs"]
+        ports:
+        - containerPort: 5001
+          name: "api"
+          protocol: "TCP"
+        - containerPort: 8080
+          name: "gateway"
+          protocol: "TCP"
+        volumeMounts:
+          - mountPath: /data/ipfs
+            name: dev-ipfs-data
+      restartPolicy: Always
+  volumeClaimTemplates:
+  - metadata:
+      name: dev-ipfs-data
+    spec:
+      storageClassName: "standard"
+      accessModes:
+        - ReadWriteOnce  # Read-write for a single node only
+      resources:
+        requests:
+          storage: 200Gi
