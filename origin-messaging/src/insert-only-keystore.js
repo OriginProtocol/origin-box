@@ -5,8 +5,8 @@ class InsertOnlyKeystore {
     this._signVerifyRegistry = {}
   }
 
-  registerSignVerify(db_sig, signFunc, verifyFunc, postFunc) {
-    this._signVerifyRegistry[db_sig] = { signFunc, verifyFunc, postFunc}
+  registerSignVerify(dbSig, signFunc, verifyFunc, postFunc) {
+    this._signVerifyRegistry[dbSig] = {signFunc, verifyFunc, postFunc}
   }
 
   getSignVerify(id) {

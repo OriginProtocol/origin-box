@@ -162,9 +162,7 @@ async function startSnapshotDB(db) {
   await loadSnapshotDB(db)
 }
 
-
-async function _onPeerConnected(address, peer)
-{
+async function _onPeerConnected(address, peer) {
   const getStore = address => this.stores[address]
   const getDirectConnection = peer => this._directConnections[peer]
   const onChannelCreated = channel => this._directConnections[channel._receiverID] = channel
@@ -180,8 +178,9 @@ async function _onPeerConnected(address, peer)
     onChannelCreated
   )
 
-  if (getStore(address))
+  if (getStore(address)) {
     getStore(address).events.emit('peer', peer)
+  }
 }
 
 const startOrbitDbServer = async (ipfs) => {
@@ -229,7 +228,7 @@ const startOrbitDbServer = async (ipfs) => {
   })
 
   // testing it's best to drop this for now
-  // global_registry.load()
+  // globalRegistry.load()
   startSnapshotDB(globalRegistry)
 }
 
