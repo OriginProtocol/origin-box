@@ -21,3 +21,5 @@ spec:
             value: "origin-messaging-ipfs.staging.svc.cluster.local"
           - name: IPFS_PORT
             value: "5001"
+          - name: MESSAGING_NAMESPACE
+            value: "staging"
