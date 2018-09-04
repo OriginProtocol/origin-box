@@ -8,11 +8,11 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: {{ template "ipfs.fullname" . }}
   serviceName: {{ template "ipfs.fullname" . }}
-  replicas: 1
   template:
     metadata:
       labels:
