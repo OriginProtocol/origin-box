@@ -48,3 +48,6 @@ helm install stable/nginx-ingress --name prod-ingress \
 	--namespace production \
 	--set rbac.create=true \
 	--set controller.service.loadBalancerIP="35.203.166.86"
+
+kubectl create -f letsencrypt-staging.yaml
+kubectl create -f letsencrypt-prod.yaml
