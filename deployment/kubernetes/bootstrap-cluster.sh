@@ -32,7 +32,7 @@ helm install stable/cert-manager --name cert-manager \
 # See https://github.com/helm/helm/issues/2060
 
 # Install nginx ingress for development
-helm install stable/nginx-ingress --name development-ingress \
+helm install stable/nginx-ingress --name dev-ingress \
 	--namespace development \
 	--set rbac.create=true \
 	--set controller.service.loadBalancerIP="35.233.140.121"
@@ -44,7 +44,7 @@ helm install stable/nginx-ingress --name staging-ingress \
 	--set controller.service.loadBalancerIP="35.197.88.39"
 
 # Install nginx ingress for production
-helm install stable/nginx-ingress --name production-ingress \
+helm install stable/nginx-ingress --name prod-ingress \
 	--namespace production \
 	--set rbac.create=true \
 	--set controller.service.loadBalancerIP="35.203.166.86"
