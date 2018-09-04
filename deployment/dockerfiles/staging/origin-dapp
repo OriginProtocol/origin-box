@@ -27,7 +27,10 @@ COPY --from=origin-js-build /app/dist/ /app/node_modules/origin/dist/
 COPY --from=origin-js-build /app/package.json /app/node_modules/origin/
 RUN NODE_ENV=production node_modules/.bin/webpack --progress --display errors-only
 
+# TODO remove this and use nginx when stable can handle configuration of env vars properly
+CMD /bin/sh -c "node_modules/.bin/serve -p 80 build"
+
 # Nginx to service static files
-FROM nginx:1.15.2
-COPY --from=build /app/build /usr/share/nginx/html
-CMD ["nginx", "-g", "daemon off;"]
+# FROM nginx:1.15.2
+# COPY --from=build /app/build /usr/share/nginx/html
+# CMD ["nginx", "-g", "daemon off;"]
