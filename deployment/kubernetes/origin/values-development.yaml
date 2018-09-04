@@ -1,0 +1,4 @@
+dappImage: gcr.io/origin-214503/development/origin-dapp
+bridgeImage: gcr.io/origin-214503/development/origin-bridge
+messagingIpfsImage: gcr.io/origin-214503/development/origin-messaging-ipfs
+messagingImage: gcr.io/origin-214503/development/origin-messaging

@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "messaging-ipfs.fullname" . }}
+  labels:
+    app: {{ template "messaging-ipfs.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: {{ .Values.clusterIssuer }}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # Increase timeouts for websockets
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  tls:
+    - secretName: messaging.{{ .Release.namespace }}.originprotocol.com
+      hosts:
+        - messaging.{{ .Release.namespace }}.originprotocol.com
+  rules:
+    - host: messaging.{{ .Release.namespace }}.originprotocol.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "messaging-ipfs.fullname" . }}
+              servicePort: 9012

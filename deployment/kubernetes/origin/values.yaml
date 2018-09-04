@@ -1,0 +1,20 @@
+clusterIssuer: letsencrypt-staging
+letsEncryptEmail: support@originprotocol.com
+
+dappName: dapp
+dappImageTag: latest
+dappReplicas: 1
+
+bridgeName: bridge
+bridgeImageTag: latest
+bridgeReplicas: 1
+
+messagingIpfsName: messaging-ipfs
+messagingIpfsImageTag: latest
+
+messagingName: messaging
+messagingImageTag: latest
+
+snapshotImage: gcr.io/origin-214503/auto-gke-pvc-snapshots
+snapshotTag: latest
+snapshotCron: "0 */1 * * *"

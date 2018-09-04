@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-bridge
+  namespace: {{ .Release.namespace }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: {{ .Values.clusterIssuer }}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST"
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  tls:
+    - secretName: bridge.{{ .Release.namespace }}.originprotocol.com
+      hosts:
+        - bridge.{{ .Release.namespace }}.originprotocol.com
+  rules:
+  - host: bridge.{{ .Release.namespace }}.originprotocol.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: origin-bridge
+          servicePort: 5000
