@@ -30,7 +30,7 @@ spec:
           protocol: TCP
         volumeMounts:
           - mountPath: /data/ipfs
-            name: {{ Release.Namespace }}-messaging-ipfs
+            name: {{ .Release.Namespace }}-messaging-ipfs
       - name: {{ template "messaging.fullname" . }}
         image: "{{ .Values.messagingImage }}:{{ .Values.messagingImageTag }}"
         env:
@@ -41,7 +41,7 @@ spec:
       restartPolicy: Always
   volumeClaimTemplates:
   - metadata:
-      name: {{ Release.Namespace }}-messaging-ipfs
+      name: {{ .Release.Namespace }}-messaging-ipfs
       labels:
         app: {{ template "messaging-ipfs.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
