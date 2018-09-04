@@ -33,7 +33,7 @@ helm install stable/cert-manager --name cert-manager \
 
 # Install nginx ingress for development
 helm install stable/nginx-ingress --name dev-ingress \
-	--namespace development \
+	--namespace dev \
 	--set rbac.create=true \
 	--set controller.service.loadBalancerIP="35.233.140.121"
 
@@ -45,7 +45,7 @@ helm install stable/nginx-ingress --name staging-ingress \
 
 # Install nginx ingress for production
 helm install stable/nginx-ingress --name prod-ingress \
-	--namespace production \
+	--namespace prod \
 	--set rbac.create=true \
 	--set controller.service.loadBalancerIP="35.203.166.86"
 
