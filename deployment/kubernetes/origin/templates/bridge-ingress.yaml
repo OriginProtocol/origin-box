@@ -25,5 +25,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: origin-bridge
+          serviceName: {{ template "bridge.fullname" . }}
           servicePort: 5000

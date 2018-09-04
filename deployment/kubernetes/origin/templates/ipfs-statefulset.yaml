@@ -17,6 +17,8 @@ spec:
     metadata:
       labels:
         app: {{ template "ipfs.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ template "ipfs.fullname" . }}

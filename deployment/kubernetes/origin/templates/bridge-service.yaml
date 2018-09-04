@@ -10,9 +10,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: NodePort
+  selector:
+    app: {{ template "bridge.fullname" . }}
   ports:
   - name: gunicorn
     port: 5000
     protocol: TCP
-  selector:
-    name: {{ template "bridge.fullname" . }}

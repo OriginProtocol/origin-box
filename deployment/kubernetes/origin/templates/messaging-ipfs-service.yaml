@@ -9,6 +9,8 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: NodePort
+  selector:
+    app: {{ template "messaging-ipfs.fullname" . }}
   ports:
   - name: api
     port: 5001
@@ -16,5 +18,3 @@ spec:
   - name: websocket
     port: 9012
     protocol: TCP
-  selector:
-    app: {{ template "messaging-ipfs.fullname" . }}
