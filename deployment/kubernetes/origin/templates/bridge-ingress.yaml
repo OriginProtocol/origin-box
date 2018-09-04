@@ -1,8 +1,12 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: nginx-ingress-bridge
-  namespace: {{ .Release.namespace }}
+  name: {{ template "bridge.fullname" . }}
+  labels:
+    app: {{ template "bridge.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
@@ -10,16 +14,13 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST"
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   tls:
-    - secretName: bridge.{{ .Release.namespace }}.originprotocol.com
+    - secretName: bridge.{{ .Release.Namespace }}.originprotocol.com
       hosts:
-        - bridge.{{ .Release.namespace }}.originprotocol.com
+        - bridge.{{ .Release.Namespace }}.originprotocol.com
   rules:
-  - host: bridge.{{ .Release.namespace }}.originprotocol.com
+  - host: bridge.{{ .Release.Namespace }}.originprotocol.com
     http:
       paths:
       - path: /

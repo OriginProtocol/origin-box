@@ -31,11 +31,11 @@ spec:
           protocol: "TCP"
         volumeMounts:
           - mountPath: /data/ipfs
-            name: {{ template "ipfs.fullname" . }}
+            name: {{ .Release.Namespace }}-ipfs
       restartPolicy: Always
   volumeClaimTemplates:
   - metadata:
-      name: {{ template "ipfs.fullname" . }}
+      name: {{ .Release.Namespace }}-ipfs
     spec:
       storageClassName: "standard"
       accessModes:

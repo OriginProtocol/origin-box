@@ -14,11 +14,11 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   tls:
-    - secretName: dapp.{{ .Release.namespace }}.originprotocol.com
+    - secretName: dapp.{{ .Release.Namespace }}.originprotocol.com
       hosts:
-        - dapp.{{ .Release.namespace }}.originprotocol.com
+        - dapp.{{ .Release.Namespace }}.originprotocol.com
   rules:
-  - host: dapp.{{ .Release.namespace }}.originprotocol.com
+  - host: dapp.{{ .Release.Namespace }}.originprotocol.com
     http:
       paths:
         - path: /

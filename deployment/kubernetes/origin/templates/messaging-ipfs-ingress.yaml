@@ -17,11 +17,11 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
 spec:
   tls:
-    - secretName: messaging.{{ .Release.namespace }}.originprotocol.com
+    - secretName: messaging.{{ .Release.Namespace }}.originprotocol.com
       hosts:
-        - messaging.{{ .Release.namespace }}.originprotocol.com
+        - messaging.{{ .Release.Namespace }}.originprotocol.com
   rules:
-    - host: messaging.{{ .Release.namespace }}.originprotocol.com
+    - host: messaging.{{ .Release.Namespace }}.originprotocol.com
       http:
         paths:
           - path: /

@@ -13,5 +13,5 @@ spec:
         spec:
           containers:
           - name: auto-gke-pvc-snapshots
-            image: {{ .Values.snapshotImage }}:{{ .Values.snapshotTag }}
+            image: "{{ .Values.snapshotImage }}:{{ .Values.snapshotImageTag }}"
           restartPolicy: OnFailure

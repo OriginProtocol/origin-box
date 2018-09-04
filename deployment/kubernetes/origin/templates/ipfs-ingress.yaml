@@ -16,11 +16,11 @@ metadata:
     nginx.ingress.kubernetes.io/cors-allow-methods: "POST"
 spec:
   tls:
-    - secretName: ipfs.{{ .Release.namespace }}.originprotocol.com
+    - secretName: ipfs.{{ .Release.Namespace }}.originprotocol.com
       hosts:
-        - ipfs.{{ .Release.namespace }}.originprotocol.com
+        - ipfs.{{ .Release.Namespace }}.originprotocol.com
   rules:
-    - host: ipfs.{{ .Release.namespace }}.originprotocol.com
+    - host: ipfs.{{ .Release.Namespace }}.originprotocol.com
       http:
         paths:
           # Only allow the add API call through to the IPFS API

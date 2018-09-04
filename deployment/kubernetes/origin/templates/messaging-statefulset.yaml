@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "messaging-ipfs.fullname" . }}
+  name: {{ template "messaging.fullname" . }}
   labels:
-    app: {{ template "messaging-ipfs.fullname" . }}
+    app: {{ template "messaging.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   selector:
     matchLabels:
-      app: {{ template "messaging-ipfs.fullname" . }}
-  serviceName: {{ template "messaging-ipfs.fullname" . }}
+      app: {{ template "messaging.fullname" . }}
+  serviceName: {{ template "messaging.fullname" . }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "messaging-ipfs.fullname" . }}
+        app: {{ template "messaging.fullname" . }}
     spec:
       containers:
       - name: {{ template "messaging-ipfs.fullname" . }}
-        image: "{{ .Values.messagingIpfsImage }}:{{ .Values.messagingIpfsTag }}"
+        image: "{{ .Values.messagingIpfsImage }}:{{ .Values.messagingIpfsImageTag }}"
         ports:
         - containerPort: 5001
           name: api
@@ -30,18 +30,18 @@ spec:
           protocol: TCP
         volumeMounts:
           - mountPath: /data/ipfs
-            name: {{ template "messaging-ipfs.fullname" . }}
+            name: {{ Release.Namespace }}-messaging-ipfs
       - name: {{ template "messaging.fullname" . }}
-        image: "{{ .Values.messagingImage }}:{{ .Values.messagingTag }}"
+        image: "{{ .Values.messagingImage }}:{{ .Values.messagingImageTag }}"
         env:
           - name: IPFS_ADDRESS
-            value: {{ template "messaging-ipfs.fullname" . }}.{{ .Release.namespace }}.svc.cluster.local
+            value: {{ template "messaging-ipfs.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
           - name: IPFS_PORT
-            value: 5001
+            value: "5001"
       restartPolicy: Always
   volumeClaimTemplates:
   - metadata:
-      name: {{ template "messaging-ipfs.fullname" . }}
+      name: {{ Release.Namespace }}-messaging-ipfs
       labels:
         app: {{ template "messaging-ipfs.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
