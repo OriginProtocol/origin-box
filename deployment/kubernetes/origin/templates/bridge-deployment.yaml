@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: {{ template "bridge.fullname" . }}
-        image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.bridgeImage }}:{{ .Values.dappImageTag }}"
+        image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.bridgeImage }}:{{ .Values.bridgeImageTag }}"
         ports:
         - containerPort: 5000
           protocol: TCP
