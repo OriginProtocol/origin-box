@@ -1,0 +1,25 @@
+containerRegistry: gcr.io/origin-214503
+
+clusterIssuer: letsencrypt-staging
+letsEncryptEmail: support@originprotocol.com
+
+bridgeImage: origin-bridge
+bridgeImageTag: latest
+bridgeReplicas: 1
+
+dappImage: origin-dapp
+dappImageTag: latest
+dappReplicas: 1
+
+ipfsImage: ipfs/go-ipfs
+ipfsImageTag: master
+
+messagingIpfsImage: origin-messaging-ipfs
+messagingIpfsImageTag: latest
+
+messagingImage: origin-messaging
+messagingImageTag: latest
+
+snapshotImage: auto-gke-pvc-snapshots
+snapshotImageTag: latest
+snapshotCron: "0 */1 * * *"

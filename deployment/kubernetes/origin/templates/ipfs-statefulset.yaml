@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: {{ template "ipfs.fullname" . }}
-        image: "ipfs/go-ipfs:master"
+        image: "{{ .Values.ipfsImage }}:{{ .Values.ipfsImageTag }}"
         command: ["/usr/local/bin/start_ipfs"]
         ports:
         - containerPort: 5001
@@ -28,14 +28,14 @@ spec:
           protocol: TCP
         - containerPort: 8080
           name: gateway
-          protocol: "TCP"
+          protocol: TCP
         volumeMounts:
           - mountPath: /data/ipfs
-            name: {{ .Release.Namespace }}-ipfs
+            name: {{ template "ipfs.fullname" . }}-data
       restartPolicy: Always
   volumeClaimTemplates:
   - metadata:
-      name: {{ .Release.Namespace }}-ipfs
+      name: {{ template "ipfs.fullname" . }}-data
     spec:
       storageClassName: "standard"
       accessModes:

@@ -21,6 +21,6 @@ spec:
     spec:
       containers:
       - name: {{ template "dapp.fullname" . }}
-        image: "{{ .Values.dappImage }}:{{ .Values.dappImageTag }}"
+        image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.dappImage }}:{{ .Values.dappImageTag }}"
         ports:
         - containerPort: 80

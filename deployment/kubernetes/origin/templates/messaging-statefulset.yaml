@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: {{ template "messaging-ipfs.fullname" . }}
-        image: "{{ .Values.messagingIpfsImage }}:{{ .Values.messagingIpfsImageTag }}"
+        image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.messagingIpfsImage }}:{{ .Values.messagingIpfsImageTag }}"
         ports:
         - containerPort: 5001
           name: api
@@ -30,9 +30,9 @@ spec:
           protocol: TCP
         volumeMounts:
           - mountPath: /data/ipfs
-            name: {{ .Release.Namespace }}-messaging-ipfs
+            name: {{ template "messaging.fullname" . }}-data
       - name: {{ template "messaging.fullname" . }}
-        image: "{{ .Values.messagingImage }}:{{ .Values.messagingImageTag }}"
+        image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.messagingImage }}:{{ .Values.messagingImageTag }}"
         env:
           - name: IPFS_ADDRESS
             value: {{ template "messaging-ipfs.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
@@ -41,7 +41,7 @@ spec:
       restartPolicy: Always
   volumeClaimTemplates:
   - metadata:
-      name: {{ .Release.Namespace }}-messaging-ipfs
+      name: {{ template "messaging.fullname" . }}-data
       labels:
         app: {{ template "messaging-ipfs.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
