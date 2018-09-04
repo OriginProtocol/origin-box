@@ -16,7 +16,11 @@ metadata:
     nginx.ingress.kubernetes.io/cors-allow-methods: "POST"
 spec:
   tls:
+    {{ if eq .Values.clusterIssuer "letsencrypt-staging" }}
+    - secretName: ipfs.{{ .Release.Namespace }}.originprotocol.com-staging
+    {{ else }}
     - secretName: ipfs.{{ .Release.Namespace }}.originprotocol.com
+    {{ end }}
       hosts:
         - ipfs.{{ .Release.Namespace }}.originprotocol.com
   rules:
