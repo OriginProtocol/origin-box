@@ -18,7 +18,3 @@ messagingIpfsImageTag: latest
 
 messagingImage: origin-messaging
 messagingImageTag: latest
-
-snapshotImage: auto-gke-pvc-snapshots
-snapshotImageTag: latest
-snapshotCron: "0 */1 * * *"
