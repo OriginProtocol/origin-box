@@ -51,3 +51,4 @@ helm install stable/nginx-ingress --name prod-ingress \
 
 kubectl create -f letsencrypt-staging.yaml
 kubectl create -f letsencrypt-prod.yaml
+kubectl create -f snapshot-cronjob.yaml -n kube-system
