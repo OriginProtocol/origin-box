@@ -15,14 +15,14 @@ metadata:
 spec:
   tls:
     {{ if eq .Values.clusterIssuer "letsencrypt-staging" }}
-    - secretName: dapp.{{ .Release.Namespace }}.originprotocol.com-staging
+    - secretName: demo.{{ .Release.Namespace }}.originprotocol.com-staging
     {{ else }}
-    - secretName: dapp.{{ .Release.Namespace }}.originprotocol.com
+    - secretName: demo.{{ .Release.Namespace }}.originprotocol.com
     {{ end }}
       hosts:
-        - dapp.{{ .Release.Namespace }}.originprotocol.com
+        - demo.{{ .Release.Namespace }}.originprotocol.com
   rules:
-  - host: dapp.{{ .Release.Namespace }}.originprotocol.com
+  - host: demo.{{ .Release.Namespace }}.originprotocol.com
     http:
       paths:
         - path: /
