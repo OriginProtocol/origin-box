@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: auto-gke-pvc-snapshots
 spec:
-  schedule: {{ .Values.snapshotCron }}
+  schedule: "0 */1 * * *"
   startingDeadlineSeconds: 10800
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
@@ -13,5 +13,5 @@ spec:
         spec:
           containers:
           - name: auto-gke-pvc-snapshots
-            image: "{{ .Values.containerRegistry }}/{{ .Values.snapshotImage }}:{{ .Values.snapshotImageTag }}"
+            image: "gcr.io/origin-214503/auto-gke-pvc-snapshots:latest"
           restartPolicy: OnFailure
