@@ -34,3 +34,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "messaging.fullname" -}}
 {{- printf "%s-%s" .Release.Name "messaging" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{- define "eth.fullname" -}}
+{{- printf "%s-%s" .Release.Name "eth-node" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+

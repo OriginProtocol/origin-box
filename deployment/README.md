@@ -14,7 +14,7 @@ The environments are running on a Kubernetes cluster using separate namespaces. 
 | IPFS | ipfs.dev.originprotocol.com | Directed to IPFS API or gateway based on path | Running |
 | Messaging | messaging.dev.originprotocol.com | Exposes websocket at `/` | Running |
 | Bridge | bridge.dev.originprotocol.com | **Needs integration with EnvKey** | Running |
-| Eth Node | eth.dev.originprotocol.com | Private node using `ganache-cli` | |
+| Eth Node | eth.dev.originprotocol.com | **Needs to be exposed outside cluster**. Private node using `ganache-cli` | Running |
 | Discovery | discovery.dev.originprotocol.com | |
 | Faucet | faucet.dev.originprotocol.com | |
 | Postgresql |
@@ -28,7 +28,7 @@ The environments are running on a Kubernetes cluster using separate namespaces. 
 | IPFS | ipfs.staging.originprotocol.com | Directed to IPFS API or gateway based on path | Running |
 | Messaging | messaging.staging.originprotocol.com | Exposes websocket at `/` | Running |
 | Bridge | bridge.staging.originprotocol.com | **Needs integration with EnvKey** | Running |
-| Eth Node | eth.staging.originprotocol.com | Rinkeby node | |
+| Eth Node | eth.staging.originprotocol.com | **Needs to be exposed outside cluster.** Rinkeby node | Running |
 | Discovery | discovery.staging.originprotocol.com | |
 | Faucet | faucet.staging.originprotocol.com | |
 | Postgresql |

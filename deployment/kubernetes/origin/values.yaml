@@ -16,5 +16,8 @@ ipfsImageTag: master
 messagingIpfsImage: origin-messaging-ipfs
 messagingIpfsImageTag: latest
 
+ethNodeImage: eth-node
+ethNodeImageTag: latest
+
 messagingImage: origin-messaging
 messagingImageTag: latest
