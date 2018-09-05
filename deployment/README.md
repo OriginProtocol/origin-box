@@ -76,7 +76,7 @@ In a similar way contracts will be deployed to the development (ganache) and sta
 
 ### Deployment dependencies
 
-![Deployment Dependencies](https://raw.githubusercontent.com/OriginProtocol/origin-box/tomlinton/helm/deployment/dependencies.png)
+![Deployment Dependencies](https://raw.githubusercontent.com/OriginProtocol/origin-box/tomlinton/helm/deployment/dependencies.svg)
 
 ### Discord integration
 
