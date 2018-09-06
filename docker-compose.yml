@@ -165,6 +165,6 @@ services:
       npm install --quiet --no-progress &&
       npm link origin &&
       wait-for.sh -t 0 -q origin-js:8081 --
-      node_modules/.bin/webpack-dev-server --host 0.0.0.0 --watch-poll 500"
+      node node_modules/webpack-dev-server/bin/webpack-dev-server.js --host 0.0.0.0 --watch-poll 500"
     networks:
       - default
