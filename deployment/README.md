@@ -8,7 +8,7 @@ The environments are running on a Kubernetes cluster using separate namespaces. 
 
 ### Development (In progress)
 
-| Service | Hostname | Notes | State |
+| Service | Address | Notes | State |
 | ------- | -------- | ----- | ----- |
 | DApp | demo.dev.originprotocol.com | **Needs `origin-js` contract addresses** | Running |
 | IPFS | ipfs.dev.originprotocol.com | Directed to IPFS API or gateway based on path | Running |
@@ -23,7 +23,7 @@ The environments are running on a Kubernetes cluster using separate namespaces. 
  
 ### Staging (In progress)
 
-| Service | Hostname | Notes | State |
+| Service | Address | Notes | State |
 | ------- | -------- | ----- | ----- |
 | DApp | demo.staging.originprotocol.com | **Needs `origin-js` contract addresses** | Running |
 | IPFS | ipfs.staging.originprotocol.com | Directed to IPFS API or gateway based on path | Running |
@@ -39,7 +39,7 @@ The environments are running on a Kubernetes cluster using separate namespaces. 
 
 The `.prod.` will be removed when the services are made live.
 
-| Service | Hostname | Notes | State |
+| Service | Address | Notes | State |
 | ------- | -------- | ----- | ----- |
 | DApp | demo.prod.originprotocol.com | | |
 | IPFS | ipfs.prod.originprotocol.com | Directed to IPFS API or gateway based on path | |
@@ -49,7 +49,7 @@ The `.prod.` will be removed when the services are made live.
 | Discovery | discovery.prod.originprotocol.com |  |
 | Faucet | faucet.prod.originprotocol.com | |
 | Postgresql | origin-214503:us-west1:prod | Google Cloud provisioned, 9.6 | Running |
-| Elasticsearch |
+| Elasticsearch | 051cd7e780424c669c760d3bf25f2a92.us-west1.gcp.cloud.es.io:9243 | Elastic Cloud provisioned | Running |
 
 ## Backups (Done)
 
