@@ -13,11 +13,12 @@ The environments are running on a Kubernetes cluster using separate namespaces. 
 | DApp | demo.dev.originprotocol.com | **Needs `origin-js` contract addresses** | Running |
 | IPFS | ipfs.dev.originprotocol.com | Directed to IPFS API or gateway based on path | Running |
 | Messaging | messaging.dev.originprotocol.com | Exposes websocket at `/` | Running |
-| Bridge | bridge.dev.originprotocol.com | **Needs integration with EnvKey** | Running |
+| Bridge | bridge.dev.originprotocol.com | | Running |
 | Eth Node | eth.dev.originprotocol.com | **Needs to be exposed outside cluster**. Private node using `ganache-cli` | Running |
 | Discovery | discovery.dev.originprotocol.com | |
 | Faucet | faucet.dev.originprotocol.com | |
-| Postgresql |
+| Postgresql | origin-214503:us-west1:dev | Google Cloud provisioned, 9.6 | Running |
+ 
 | Elasticsearch |
  
 ### Staging (In progress)
@@ -27,11 +28,11 @@ The environments are running on a Kubernetes cluster using separate namespaces. 
 | DApp | demo.staging.originprotocol.com | **Needs `origin-js` contract addresses** | Running |
 | IPFS | ipfs.staging.originprotocol.com | Directed to IPFS API or gateway based on path | Running |
 | Messaging | messaging.staging.originprotocol.com | Exposes websocket at `/` | Running |
-| Bridge | bridge.staging.originprotocol.com | **Needs integration with EnvKey** | Running |
+| Bridge | bridge.staging.originprotocol.com | | Running |
 | Eth Node | eth.staging.originprotocol.com | **Needs to be exposed outside cluster.** Rinkeby node | Running |
 | Discovery | discovery.staging.originprotocol.com | |
 | Faucet | faucet.staging.originprotocol.com | |
-| Postgresql |
+| Postgresql | origin-214503:us-west1:staging | Google Cloud provisioned, 9.6 | Running |
 | Elasticsearch |
 
 ### Production (In progress)
@@ -47,7 +48,7 @@ The `.prod.` will be removed when the services are made live.
 | Eth Node | eth.prod.originprotocol.com | Mainnet node | |
 | Discovery | discovery.prod.originprotocol.com |  |
 | Faucet | faucet.prod.originprotocol.com | |
-| Postgresql |
+| Postgresql | origin-214503:us-west1:prod | Google Cloud provisioned, 9.6 | Running |
 | Elasticsearch |
 
 ## Backups (Done)
