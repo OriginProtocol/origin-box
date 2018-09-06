@@ -18,7 +18,6 @@ The environments are running on a Kubernetes cluster using separate namespaces. 
 | Discovery | discovery.dev.originprotocol.com | |
 | Faucet | faucet.dev.originprotocol.com | |
 | Postgresql | origin-214503:us-west1:dev | Google Cloud provisioned, 9.6 | Running |
- 
 | Elasticsearch |
  
 ### Staging (In progress)
