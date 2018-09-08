@@ -111,10 +111,10 @@ services:
 
   origin-bridge:
     container_name: origin-bridge
+    image: origin-bridge
     build:
       context: .
       dockerfile: development/dockerfiles/origin-bridge
-    image: origin-bridge
     volumes:
       - ./origin-bridge:/app
       # Set the envfile from the local envfile
@@ -133,6 +133,7 @@ services:
 
   origin-dapp:
     container_name: origin-dapp
+    image: origin-dapp
     build:
       context: .
       dockerfile: development/dockerfiles/origin-dapp
