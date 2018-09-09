@@ -1,3 +1,4 @@
+{{ if eq .Release.Namespace "dev" or eq .Release.Namespace "staging" }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -22,19 +23,48 @@ spec:
     spec:
       containers:
       - name: {{ template "eth.fullname" . }}
-        image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.ethNodeImage }}:{{ .Values.ethNodeImageTag }}"
+        image: ethereum/client-go
         ports:
         - containerPort: 8545
           name: rpc
           protocol: TCP
-        {{ if ne .Release.Namespace "dev" }}
         - containerPort: 8546
           name: ws
           protocol: TCP
+        args:
+        - "--ws"
+        - "--wsaddr 0.0.0.0"
+        - "--wport 8546"
+        - "--wsorigins *"
+        - "--rpc"
+        - "--rpcaddr 0.0.0.0"
+        - "--rpcport 8545"
+        {{ if eq .Release.Namespace "dev" }}
+        - "--networkid {{ .Values.gethNetworkId }}"
+        {{ else if eq .Release.Namespace "staging" }}
+        # Configure for Rinkeby
+        - "--rinkeby"
+        - "--syncmode fast"
+        - "--bootnodes enode://a24ac7c5484ef4ed0c5eb2d36620ba4e4aa13b8c84684e1b4aab0cebea2ae45cb4d375b77eab56516d34bfbd3c1a833fc51296ff084b770b94fb9028c4d25ccf@52.169.42.101:30303"
         {{ end }}
         volumeMounts:
           - mountPath: /ethereum
             name: {{ template "eth.fullname" . }}-data
+      {{ if eq .Release.Namespace "dev" }}
+      # Add the genesis configuration for private chain
+      initContainers:
+        - name: init-genesis
+          image: ethereum/client-go
+          args:
+          - "init"
+          - "--datadir=/ethereum"
+          - "/etc/geth/genesis.json"
+        volumeMounts:
+          - mountPath: /ethereum
+            name: {{ template "eth.fullname" . }}-data
+          - name: genesis-cfg
+            mountPath: /etc/geth/
+      {{ end }}
       restartPolicy: Always
   volumeClaimTemplates:
   - metadata:
@@ -56,4 +86,4 @@ spec:
             # Mainnet
             storage: 2000Gi
           {{ end }}
-
+{{ end }}

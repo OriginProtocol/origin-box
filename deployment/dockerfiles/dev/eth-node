@@ -1,8 +1,0 @@
-FROM trufflesuite/ganache-cli:latest
-
-EXPOSE 8546
-EXPOSE 8545
-
-ENTRYPOINT ["./cli.js"]
-
-CMD ["-d", "-m", "candy maple velvet cake sugar cream honey rich smooth crumble sweet treat", "--db", "/ethereum", "-i", "2222"]

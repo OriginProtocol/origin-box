@@ -13,7 +13,7 @@ metadata:
     certmanager.k8s.io/cluster-issuer: {{ .Values.clusterIssuer }}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, OPTIONS, POST"
 spec:
   tls:
     {{ if eq .Values.clusterIssuer "letsencrypt-staging" }}
