@@ -2,9 +2,9 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: {{ template "eth.fullname" . }}-bootnode
+  name: {{ template "ethereum.fullname" . }}-bootnode
   labels:
-    app: {{ template "eth.fullname" . }}-bootnode
+    app: {{ template "ethereum.fullname" . }}-bootnode
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,11 +12,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "eth.fullname" . }}-bootnode
+      app: {{ template "ethereum.fullname" . }}-bootnode
   template:
     metadata:
       labels:
-        app: {{ template "eth.fullname" . }}-bootnode
+        app: {{ template "ethereum.fullname" . }}-bootnode
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
     spec:
@@ -28,7 +28,7 @@ spec:
           - "-c"
           - "bootnode --nodekey=/etc/bootnode/node.key --verbosity=4"
         volumeMounts:
-        - name: {{ template "eth.fullname" . }}-bootnode
+        - name: {{ template "ethereum.fullname" . }}-bootnode
           mountPath: /etc/bootnode
         ports:
         - name: discovery
@@ -41,7 +41,7 @@ spec:
         - "-c"
         - "while [ 1 ]; do echo -e \"HTTP/1.1 200 OK\n\nenode://$(bootnode -writeaddress --nodekey=/etc/bootnode/node.key)@$(POD_IP):30301\" | nc -l -v -p 80 || break; done;"
         volumeMounts:
-        - name: {{ template "eth.fullname" . }}-bootnode
+        - name: {{ template "ethereum.fullname" . }}-bootnode
           mountPath: /etc/bootnode
         env:
         - name: POD_IP
@@ -60,11 +60,11 @@ spec:
         - "-c"
         - "bootnode --genkey=/etc/bootnode/node.key"
         volumeMounts:
-        - name: {{ template "eth.fullname" . }}-bootnode
+        - name: {{ template "ethereum.fullname" . }}-bootnode
           mountPath: /etc/bootnode
   volumeClaimTemplates:
     - metadata:
-        name: {{ template "eth.fullname" . }}-bootnode
+        name: {{ template "ethereum.fullname" . }}-bootnode
       spec:
         storageClassName: "standard"
         accessModes:

@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "eth.fullname" . }}-tx-node
+  name: {{ template "ethereum.fullname" . }}-tx-node
   labels:
-    app: {{ template "eth.fullname" . }}-tx-node
+    app: {{ template "ethereum.fullname" . }}-tx-node
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -11,12 +11,12 @@ spec:
   replicas: {{ .Values.gethTxReplicas }}
   selector:
     matchLabels:
-      app: {{ template "eth.fullname" . }}-tx-node
-  serviceName: {{ template "eth.fullname" . }}-tx-node
+      app: {{ template "ethereum.fullname" . }}-tx-node
+  serviceName: {{ template "ethereum.fullname" . }}-tx-node
   template:
     metadata:
       labels:
-        app: {{ template "eth.fullname" . }}-tx-node
+        app: {{ template "ethereum.fullname" . }}-tx-node
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -34,72 +34,75 @@ spec:
           protocol: UDP
         - name: discovery-tcp
           containerPort: 30303
-        # Use a shell so env vars are available
+        command: ["/bin/sh"]
         args:
-          - "--ws"
-          - "--wsaddr 0.0.0.0"
-          - "--wport 8546"
-          - "--wsorigins *"
-          - "--rpc"
-          - "--rpcaddr 0.0.0.0"
-          - "--rpcport 8545"
-          - "--ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SERVICE}"
+          - "-c"
           {{- if eq .Release.Namespace "dev" }}
-          - "--networkid {{ .Values.gethNetworkId }}"
-          - "--bootnodes `cat /root/.ethereum/bootnodes`"
-          - "--verbosity 5"
+          - "geth
+            --ws
+            --wsaddr 0.0.0.0
+            --wsport 8546
+            --rpc
+            --rpcaddr 0.0.0.0
+            --rpcport 8545
+            --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SERVICE}
+            --networkid=${NETWORK_ID}
+            --bootnodes=`cat /root/.ethereum/bootnodes`"
           {{- else if eq .Release.Namespace "staging" }}
-          # Configure for Rinkeby
-          - "--rinkeby"
-          - "--syncmode fast"
-          - "--bootnodes enode://a24ac7c5484ef4ed0c5eb2d36620ba4e4aa13b8c84684e1b4aab0cebea2ae45cb4d375b77eab56516d34bfbd3c1a833fc51296ff084b770b94fb9028c4d25ccf@52.169.42.101:30303"
+          - "geth
+            --ws
+            --wsaddr 0.0.0.0
+            --wsport 8546
+            --rpc
+            --rpcaddr 0.0.0.0
+            --rpcport 8545
+            --rinkeby
+            --syncmode fast
+            --bootnodes enode://a24ac7c5484ef4ed0c5eb2d36620ba4e4aa13b8c84684e1b4aab0cebea2ae45cb4d375b77eab56516d34bfbd3c1a833fc51296ff084b770b94fb9028c4d25ccf@52.169.42.101:30303"
           {{- end }}
         env:
         - name: ETHSTATS_SERVICE
-          value: {{ template "eth.fullname" . }}-ethstats.{{ .Release.Namespace }}
+          value: {{ template "ethereum.fullname" . }}-ethstats.{{ .Release.Namespace }}
         - name: ETHSTATS_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "eth.fullname" . }}-ethstats
+              name: {{ template "ethereum.fullname" . }}-ethstats
               key: WS_SECRET
         - name: NETWORK_ID
           valueFrom:
             configMapKeyRef:
-              name: {{ template "eth.fullname" . }}-config
+              name: {{ template "ethereum.fullname" . }}-genesis-config
               key: networkid
         volumeMounts:
           - mountPath: /root/.ethereum
-            name: {{ template "eth.fullname" . }}-data
+            name: {{ template "ethereum.fullname" . }}-data
       {{- if eq .Release.Namespace "dev" }}
       initContainers:
-      # Add the genesis configuration for private chain
-      # TODO only do this if it has not already been done
       - name: init-genesis
         image: {{ .Values.gethImage }}:{{ .Values.gethImageTag }}
         args:
           - "init"
           - "/etc/geth/genesis.json"
         volumeMounts:
-          - name: {{ template "eth.fullname" . }}-data
+          - name: {{ template "ethereum.fullname" . }}-data
             mountPath: /root/.ethereum
           - name: genesis-config
             mountPath: /etc/geth/
-      # Import geth account
-      # TODO only do this if it has not already been done
-      {{ if .Values.gethAccountPrivateKey }}
+      {{- if .Values.gethAccountPrivateKey }}
       - name: import-geth-account
         image: {{ .Values.gethImage }}:{{ .Values.gethImageTag }}
         command: ["/bin/sh"]
         args:
-          - "-c"
-          - "geth account import --password /root/.ethereum/account/accountSecret /root/.ethereum/account/accountPrivateKey"
+        - "-c"
+        - |-
+{{ .Files.Get "scripts/import-account.sh" | indent 10 }}
         volumeMounts:
-          - name: {{ template "eth.fullname" . }}-data
+          - name: {{ template "ethereum.fullname" . }}-data
             mountPath: /root/.ethereum
           - name: account
             readOnly: true
             mountPath: /root/.ethereum/account
-      {{ end }}
+      {{- end }}
       - name: get-bootnodes
         image: {{ .Values.gethImage }}:{{ .Values.gethImageTag }}
         command: ["/bin/sh"]
@@ -109,26 +112,23 @@ spec:
 {{ .Files.Get "scripts/get-bootnode.sh" | indent 10 }}
         env:
         - name: BOOTNODE_SERVICE
-          value: {{ template "eth.fullname" . }}-bootnode.{{ .Release.Namespace }}.svc.cluster.local
+          value: {{ template "ethereum.fullname" . }}-bootnode.{{ .Release.Namespace }}.svc.cluster.local
         volumeMounts:
-        - name: geth-data
+        - name: {{ template "ethereum.fullname" . }}-data
           mountPath: /geth
       {{- end }}
       volumes:
-      - name: geth-data
-        emptyDir: {}
       - name: genesis-config
         configMap:
-          name: {{ template "eth.fullname" . }}-genesis-config
+          name: {{ template "ethereum.fullname" . }}-genesis-config
       - name: account
         secret:
-          secretName: {{ template "eth.fullname" . }}-account
+          secretName: {{ template "ethereum.fullname" . }}-account
   volumeClaimTemplates:
     - metadata:
-        name: {{ template "eth.fullname" . }}-data
+        name: {{ template "ethereum.fullname" . }}-data
       spec:
         {{- if eq .Release.Namespace "prod" }}
-        # Use SSD for mainnet node
         storageClassName: "ssd"
         {{- else }}
         storageClassName: "standard"
@@ -138,12 +138,9 @@ spec:
         resources:
           requests:
             {{- if eq .Release.Namespace "dev" }}
-              # Origin development network
               storage: 5Gi
             {{- else if eq .Release.Namespace "staging" }}
-              # Rinkeby
               storage: 100Gi
             {{- else if eq .Release.Namespace "prod" }}
-              # Mainnet storage
               storage: 200Gi
             {{- end }}

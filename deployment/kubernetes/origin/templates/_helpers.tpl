@@ -36,6 +36,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this
 {{- printf "%s-%s" .Release.Name "messaging" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "eth.fullname" -}}
-{{- printf "%s-%s" .Release.Name "eth" | trunc 63 | trimSuffix "-" -}}
+{{- define "ethereum.fullname" -}}
+{{- printf "%s-%s" .Release.Name "ethereum" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

@@ -2,11 +2,11 @@ apk add --no-cache curl;
 
 CNT=0;
 
-echo "Retreiving bootnodes from $BOOTNODE_SERVICE"
+echo "Retrieving bootnodes from $BOOTNODE_SERVICE"
 
 while [ $CNT -le 90 ]
 do
-  curl -m 5 -s $BOOTNODE_SERVICE | xargs echo -n >> /geth/bootnodes;
+  curl -m 5 -s $BOOTNODE_SERVICE | xargs echo -n > /geth/bootnodes;
 
   if [ -s /geth/bootnodes ]
   then

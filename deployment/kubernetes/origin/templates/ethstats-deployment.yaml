@@ -1,9 +1,9 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "eth.fullname" . }}-ethstats
+  name: {{ template "ethereum.fullname" . }}-ethstats
   labels:
-    app: {{ template "eth.fullname" . }}-ethstats
+    app: {{ template "ethereum.fullname" . }}-ethstats
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,11 +11,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "eth.fullname" . }}-ethstats
+      app: {{ template "ethereum.fullname" . }}-ethstats
   template:
     metadata:
       labels:
-        app: {{ template "eth.fullname" . }}-ethstats
+        app: {{ template "ethereum.fullname" . }}-ethstats
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
     spec:
@@ -29,5 +29,5 @@ spec:
         - name: WS_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "eth.fullname" . }}-ethstats
+              name: {{ template "ethereum.fullname" . }}-ethstats
               key: WS_SECRET

@@ -3,9 +3,9 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "eth.fullname" . }}-miner-node
+  name: {{ template "ethereum.fullname" . }}-miner-node
   labels:
-    app: {{ template "eth.fullname" . }}-miner-node
+    app: {{ template "ethereum.fullname" . }}-miner-node
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,34 +13,36 @@ spec:
   replicas: {{ .Values.gethMinerReplicas }}
   selector:
     matchLabels:
-      app: {{ template "eth.fullname" . }}-miner-node
+      app: {{ template "ethereum.fullname" . }}-miner-node
   template:
     metadata:
       labels:
-        app: {{ template "eth.fullname" . }}-miner-node
+        app: {{ template "ethereum.fullname" . }}-miner-node
     spec:
       containers:
       - name: geth-miner
         image: {{ .Values.gethImage }}:{{ .Values.gethImageTag }}
+        command: ["/bin/sh"]
         args:
-        - "--bootnodes=`cat /root/.ethereum/bootnodes`"
-        - "--mine"
-        - "--etherbase=0"
-        - "--networkid=${NETWORK_ID}"
-        - "--ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SERVICE}"
-        - "--verbosity=5"
+        - "-c"
+        - "geth
+          --bootnodes=`cat /root/.ethereum/bootnodes`
+          --mine
+          --etherbase=0
+          --networkid=${NETWORK_ID}
+          --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SERVICE}"
         env:
         - name: ETHSTATS_SERVICE
-          value: {{ template "eth.fullname" . }}-ethstats.{{ .Release.Namespace }}.svc.cluster.local
+          value: {{ template "ethereum.fullname" . }}-ethstats.{{ .Release.Namespace }}.svc.cluster.local
         - name: ETHSTATS_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "eth.fullname" . }}-ethstats
+              name: {{ template "ethereum.fullname" . }}-ethstats
               key: WS_SECRET
         - name: NETWORK_ID
           valueFrom:
             configMapKeyRef:
-              name: {{ template "eth.fullname" . }}-config
+              name: {{ template "ethereum.fullname" . }}-genesis-config
               key: networkid
         ports:
         - name: discovery-udp
@@ -52,10 +54,9 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /root/.ethereum
-        # Limit the container to a single CPU in the dev environment for mining
         resources:
           limits:
-            cpu: "0.25"
+            cpu: "0.50"
       initContainers:
       - name: init-genesis
         image: {{ .Values.gethImage }}:{{ .Values.gethImageTag }}
@@ -73,7 +74,8 @@ spec:
         command: ["/bin/sh"]
         args:
         - "-c"
-        - "geth account import --password /root/.ethereum/account/accountSecret /root/.ethereum/account/accountPrivateKey"
+        - |-
+{{ .Files.Get "scripts/import-account.sh" | indent 10 }}
         volumeMounts:
         - name: data
           mountPath: /root/.ethereum
@@ -90,7 +92,7 @@ spec:
 {{ .Files.Get "scripts/get-bootnode.sh" | indent 10 }}
         env:
         - name: BOOTNODE_SERVICE
-          value: {{ template "eth.fullname" . }}-bootnode.{{ .Release.Namespace }}.svc.cluster.local
+          value: {{ template "ethereum.fullname" . }}-bootnode.{{ .Release.Namespace }}.svc.cluster.local
         volumeMounts:
         - name: data
           mountPath: /geth
@@ -99,8 +101,8 @@ spec:
         emptyDir: {}
       - name: genesis-config
         configMap:
-          name: {{ template "eth.fullname" . }}-genesis-config
+          name: {{ template "ethereum.fullname" . }}-genesis-config
       - name: account
         secret:
-          secretName: {{ template "eth.fullname" . }}-account
+          secretName: {{ template "ethereum.fullname" . }}-account
 {{- end }}

@@ -2,13 +2,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "eth.fullname" . }}-genesis-config
+  name: {{ template "ethereum.fullname" . }}-genesis-config
   labels:
-    app: {{ template "eth.fullname" . }}
+    app: {{ template "ethereum.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
+  networkid: "{{ .Values.gethGenesisNetworkId }}"
   genesis.json: |-
     {
         "config": {
