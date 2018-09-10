@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "eth.fullname" . }}
+  name: {{ template "ethereum.fullname" . }}
   labels:
-    app: {{ template "eth.fullname" . }}
+    app: {{ template "ethereum.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,16 +11,14 @@ metadata:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
     certmanager.k8s.io/cluster-issuer: {{ .Values.clusterIssuer }}
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST"
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   tls:
-    {{ if eq .Values.clusterIssuer "letsencrypt-staging" }}
+    {{- if eq .Values.clusterIssuer "letsencrypt-staging" }}
     - secretName: eth.{{ .Release.Namespace }}.originprotocol.com-staging
-    {{ else }}
+    {{- else }}
     - secretName: eth.{{ .Release.Namespace }}.originprotocol.com
-    {{ end }}
+    {{- end }}
       hosts:
         - eth.{{ .Release.Namespace }}.originprotocol.com
   rules:
@@ -29,10 +27,14 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "eth.fullname" . }}
+          serviceName: {{ template "ethereum.fullname" . }}-ethstats
+          servicePort: 80
+      - path: /rpc
+        backend:
+          serviceName: {{ template "ethereum.fullname" . }}
           servicePort: 8545
       # TODO use separate ingress and adjust for websocket
       - path: /ws
         backend:
-          serviceName: {{ template "eth.fullname" . }}
+          serviceName: {{ template "ethereum.fullname" . }}
           servicePort: 8546
