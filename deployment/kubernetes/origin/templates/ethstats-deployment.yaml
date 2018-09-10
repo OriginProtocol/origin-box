@@ -1,0 +1,33 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "eth.fullname" . }}-ethstats
+  labels:
+    app: {{ template "eth.fullname" . }}-ethstats
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "eth.fullname" . }}-ethstats
+  template:
+    metadata:
+      labels:
+        app: {{ template "eth.fullname" . }}-ethstats
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: ethstats
+        image: {{ .Values.ethstatsImage }}:{{ .Values.ethstatsImageTag }}
+        ports:
+        - name: http
+          containerPort: 3000
+        env:
+        - name: WS_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "eth.fullname" . }}-ethstats
+              key: WS_SECRET
