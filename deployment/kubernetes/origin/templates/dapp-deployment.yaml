@@ -20,7 +20,7 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       containers:
-      - name: {{ template "dapp.fullname" . }}
+      - name: origin-dapp
         image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.dappImage }}:{{ .Values.dappImageTag }}"
         ports:
         - containerPort: 80

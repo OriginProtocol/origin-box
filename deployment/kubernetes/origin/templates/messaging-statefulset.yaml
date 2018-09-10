@@ -19,19 +19,17 @@ spec:
         app: {{ template "messaging.fullname" . }}
     spec:
       containers:
-      - name: {{ template "messaging-ipfs.fullname" . }}
+      - name: origin-messaging-ipfs
         image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.messagingIpfsImage }}:{{ .Values.messagingIpfsImageTag }}"
         ports:
         - containerPort: 5001
           name: api
-          protocol: TCP
         - containerPort: 9012
           name: websocket
-          protocol: TCP
         volumeMounts:
           - mountPath: /data/ipfs
             name: {{ template "messaging.fullname" . }}-data
-      - name: {{ template "messaging.fullname" . }}
+      - name: origin-messaging
         image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.messagingImage }}:{{ .Values.messagingImageTag }}"
         env:
           - name: IPFS_ADDRESS

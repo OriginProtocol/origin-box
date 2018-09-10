@@ -14,11 +14,11 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   tls:
-    {{ if eq .Values.clusterIssuer "letsencrypt-staging" }}
+    {{- if eq .Values.clusterIssuer "letsencrypt-staging" }}
     - secretName: demo.{{ .Release.Namespace }}.originprotocol.com-staging
-    {{ else }}
+    {{- else }}
     - secretName: demo.{{ .Release.Namespace }}.originprotocol.com
-    {{ end }}
+    {{- end }}
       hosts:
         - demo.{{ .Release.Namespace }}.originprotocol.com
   rules:

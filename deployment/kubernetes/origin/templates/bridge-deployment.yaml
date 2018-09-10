@@ -20,14 +20,13 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       containers:
-      - name: {{ template "bridge.fullname" . }}
+      - name: origin-bridge
         image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.bridgeImage }}:{{ .Values.bridgeImageTag }}"
         ports:
         - containerPort: 5000
-          protocol: TCP
         env:
-          - name: ENVKEY
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "bridge.fullname" . }}
-                key: ENVKEY
+        - name: ENVKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "bridge.fullname" . }}
+              key: ENVKEY
