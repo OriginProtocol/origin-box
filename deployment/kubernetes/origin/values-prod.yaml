@@ -1,7 +1,7 @@
-dappImage: gcr.io/origin-214503/production/origin-dapp
-bridgeImage: gcr.io/origin-214503/production/origin-bridge
-messagingIpfsImage: gcr.io/origin-214503/production/origin-messaging-ipfs
-messagingImage: gcr.io/origin-214503/production/origin-messaging
+bridgeImageTag: b231dbcd
+dappImageTag: b43ee46
+messagingIpfsImageTag: 5865153
+messagingImageTag: 5865153
 
 ipfsStorageRequestSize: "500Gi"
 messagingIpfsStorageRequestSize: "50Gi"
