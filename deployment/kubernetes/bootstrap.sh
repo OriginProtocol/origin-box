@@ -31,23 +31,31 @@ helm install stable/cert-manager --name cert-manager \
 # globally unique names and not unique names within the namespace
 # See https://github.com/helm/helm/issues/2060
 
+# Note that SSL chain completion is disabled to prevent frequently reloading
+# of nginx-ingress when missing intermediate CA certificates are updated
+# which was resulting in dropped websocket connections for the messaging
+# server
+
 # Install nginx ingress for development
 helm install stable/nginx-ingress --name dev-ingress \
 	--namespace dev \
 	--set rbac.create=true \
-	--set controller.service.loadBalancerIP="35.233.140.121"
+	--set controller.service.loadBalancerIP="35.233.140.121" \
+	--set-string controller.extraArgs.enable-ssl-chain-completion=false
 
 # Install nginx ingress for staging
 helm install stable/nginx-ingress --name staging-ingress \
 	--namespace staging \
 	--set rbac.create=true \
-	--set controller.service.loadBalancerIP="35.197.88.39"
+	--set controller.service.loadBalancerIP="35.197.88.39" \
+	--set-string controller.extraArgs.enable-ssl-chain-completion=false
 
 # Install nginx ingress for production
 helm install stable/nginx-ingress --name prod-ingress \
 	--namespace prod \
 	--set rbac.create=true \
-	--set controller.service.loadBalancerIP="35.203.166.86"
+	--set controller.service.loadBalancerIP="35.203.166.86" \
+	--set-string controller.extraArgs.enable-ssl-chain-completion=false
 
 kubectl create -f letsencrypt-staging.yaml
 kubectl create -f letsencrypt-prod.yaml
