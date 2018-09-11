@@ -10,11 +10,9 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: {{ template "ethereum.fullname" . }}
+    app: {{ template "ethereum.fullname" . }}-tx-node
   ports:
   - name: rpc
     port: 8545
-    protocol: TCP
   - name: ws
     port: 8546
-    protocol: TCP
