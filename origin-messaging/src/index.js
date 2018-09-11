@@ -130,7 +130,7 @@ async function snapshotDB(db) {
   await db._cache.set('queue', unfinished)
   await db._cache.set('raw_snapshot', snapshotData)
 
-  loggger.debug('Saved snapshot:', snapshotData.id, ' queue:', unfinished.length)
+  logger.debug('Saved snapshot:', snapshotData.id, ' queue:', unfinished.length)
 }
 
 async function loadSnapshotDB(db) {
