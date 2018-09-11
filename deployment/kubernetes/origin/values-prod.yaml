@@ -1,7 +1,6 @@
-bridgeImageTag: b231dbcd
-dappImageTag: b43ee46
-messagingIpfsImageTag: 5865153
-messagingImageTag: 5865153
+bridgeImageTag: 'b231dbcd'
+dappImageTag: 'b43ee46-modified'
+messagingImageTag: 'a3b5056'
 
 ipfsStorageRequestSize: "500Gi"
 messagingIpfsStorageRequestSize: "50Gi"

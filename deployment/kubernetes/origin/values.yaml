@@ -17,8 +17,9 @@ ipfsImage: ipfs/go-ipfs
 ipfsImageTag: master
 
 # origin-messaging-ipfs
-messagingIpfsImage: origin-messaging-ipfs
-messagingIpfsImageTag: latest
+messagingIpfsImage: ipfs/go-ipfs
+# See https://github.com/libp2p/go-floodsub/issues/93
+messagingIpfsImageTag: v0.4.17
 
 # origin-messaging
 messagingImage: origin-messaging
