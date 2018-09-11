@@ -15,6 +15,7 @@ metadata:
     # Increase timeouts for websockets
     nginx.ingress.kubernetes.io/proxy-read-timeout: "86400"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "86400"
+    nginx.ingress.kubernetes.io/proxy-body-size: "2m"
 spec:
   tls:
     {{- if eq .Values.clusterIssuer "letsencrypt-staging" }}
