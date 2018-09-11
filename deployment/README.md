@@ -14,7 +14,7 @@ The environments are running on a Kubernetes cluster using separate namespaces. 
 | IPFS | ipfs.dev.originprotocol.com | Directed to IPFS API or gateway based on path | Running |
 | Messaging | messaging.dev.originprotocol.com | Exposes websocket at `/` | Running |
 | Bridge | bridge.dev.originprotocol.com | | Running |
-| Eth Node | eth.dev.originprotocol.com | **Needs to be exposed outside cluster**. Private node using `ganache-cli` | Running |
+| Eth Node | eth.dev.originprotocol.com | Private node using `geth`. One transaction ndoe and one mining node. RPC exposed at `/rpc` and WS exposed at `/ws`. Ethstats available at `/`. | Running |
 | Discovery | discovery.dev.originprotocol.com | |
 | Faucet | faucet.dev.originprotocol.com | |
 | Postgresql | origin-214503:us-west1:dev | Google Cloud provisioned, 9.6 | Running |
@@ -28,7 +28,7 @@ The environments are running on a Kubernetes cluster using separate namespaces. 
 | IPFS | ipfs.staging.originprotocol.com | Directed to IPFS API or gateway based on path | Running |
 | Messaging | messaging.staging.originprotocol.com | Exposes websocket at `/` | Running |
 | Bridge | bridge.staging.originprotocol.com | | Running |
-| Eth Node | eth.staging.originprotocol.com | **Needs to be exposed outside cluster.** Rinkeby node | Running |
+| Eth Node | eth.staging.originprotocol.com | Rinkeby node. RPC exposed at `/rpc` and WS exposed at `/ws`. Ethstats available at `/`. | Running |
 | Discovery | discovery.staging.originprotocol.com | |
 | Faucet | faucet.staging.originprotocol.com | |
 | Postgresql | origin-214503:us-west1:staging | Google Cloud provisioned, 9.6 | Running |
@@ -44,7 +44,7 @@ The `.prod.` will be removed when the services are made live.
 | IPFS | ipfs.prod.originprotocol.com | Directed to IPFS API or gateway based on path | |
 | Messaging | messaging.prod.originprotocol.com | Exposes websocket at `/` | |
 | Bridge | bridge.prod.originprotocol.com |  | |
-| Eth Node | eth.prod.originprotocol.com | Mainnet node | |
+| Eth Node | eth.prod.originprotocol.com | Mainnet node. RPC exposed at `/rpc` and WS exposed at `/ws`. Ethstats available at `/`. | Running |
 | Discovery | discovery.prod.originprotocol.com |  |
 | Faucet | faucet.prod.originprotocol.com | |
 | Postgresql | origin-214503:us-west1:prod | Google Cloud provisioned, 9.6 | Running |
