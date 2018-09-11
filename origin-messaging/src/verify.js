@@ -1,9 +1,10 @@
 'use strict'
 
+const web3 = new Web3(config.RPC_SERVER)
+
+import logger from './logger'
 import Web3 from 'web3'
 import * as config from './config'
-
-const web3 = new Web3(config.RPC_SERVER)
 
 function verifyConversationSignature(keysMap) {
   return (signature, key, message, buffer) => {
@@ -26,19 +27,13 @@ function verifyConversers(conversee, keysMap){
   return (o, contentObject) => {
     const checkString = joinConversationKey(conversee, o.parentSub) +
       contentObject.ts.toString()
-
     const verifyAddress = web3.eth.accounts.recover(checkString, contentObject.sig)
-
     const parentKey = keysMap.get(o.parentSub)
     const converseeKey = keysMap.get(conversee)
 
     if ((parentKey && verifyAddress == parentKey.address) ||
         (converseeKey && verifyAddress == keysMap.get(conversee).address)) {
-      console.log(
-        `Verified conv init for ${conversee}
-        Signature: ${contentObj.sign}
-        Signed with: ${verifyAddress}`
-      )
+      logger.debug(`Verified conv init for ${conversee}, Signature: ${contentObj.sign}, Signed with: ${verifyAddress}`)
       return true
     }
     return false
@@ -47,11 +42,7 @@ function verifyConversers(conversee, keysMap){
 
 function verifyMessageSignature(keysMap) {
   return (signature, key, message, buffer) => {
-    console.log(
-      `Verify message: ${message.id}
-      Key: ${key}
-      Signature: ${signature}`
-    )
+    logger.debug(`Verify message: ${message.id}, Key: ${key}, Signature: ${signature}`)
 
     const verifyAddress = web3.eth.accounts.recover(
       buffer.toString('utf8'),
@@ -76,18 +67,12 @@ function verifyRegistrySignature(signature, key, message) {
 
       const verifyPhAddress = web3.eth.accounts.recover(value.ph, value.phs)
       if (verifyPhAddress == value.address) {
-        console.log(
-          `Key verified: ${value.msg}
-          Signature: ${signature}
-          Signed with, ${verifyAddress}`
-        )
+        logger.debug(`Key verified: ${value.msg}, Signature: ${signature}, Signed with, ${verifyAddress}`)
         return true
       }
     }
   }
-
-  console.log('Key verify failed...')
-
+  logger.error('Key verify failed...')
   return false
 }
 

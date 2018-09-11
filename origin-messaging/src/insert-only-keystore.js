@@ -44,8 +44,8 @@ class InsertOnlyKeystore {
       const obj = this.getSignVerify(message.id)
 
       console.log(
-        `Verifying message: ${message.id},
-        Signature: ${signature}`
+        `Verifying message: ${message.id}
+         Signature: ${signature}`
       )
 
       if (obj && obj.verifyFunc) {

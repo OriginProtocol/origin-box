@@ -44,8 +44,8 @@ spec:
             --rpc
             --rpcaddr 0.0.0.0
             --rpcport 8545
-          {{- if eq .Release.Namespace "dev" }}
             --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SERVICE}
+          {{- if eq .Release.Namespace "dev" }}
             --networkid=${NETWORK_ID}
             --bootnodes=`cat /root/.ethereum/bootnodes`
           {{- else if eq .Release.Namespace "staging" }}
@@ -63,11 +63,13 @@ spec:
             secretKeyRef:
               name: {{ template "ethereum.fullname" . }}-ethstats
               key: WS_SECRET
+        {{ if eq .Release.Namespace "dev" }}
         - name: NETWORK_ID
           valueFrom:
             configMapKeyRef:
               name: {{ template "ethereum.fullname" . }}-genesis-config
               key: networkid
+        {{ end }}
         volumeMounts:
           - mountPath: /root/.ethereum
             name: {{ template "ethereum.fullname" . }}-data
@@ -111,7 +113,6 @@ spec:
         volumeMounts:
         - name: {{ template "ethereum.fullname" . }}-data
           mountPath: /geth
-      {{- end }}
       volumes:
       - name: genesis-config
         configMap:
@@ -119,6 +120,7 @@ spec:
       - name: account
         secret:
           secretName: {{ template "ethereum.fullname" . }}-account
+      {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: {{ template "ethereum.fullname" . }}-data

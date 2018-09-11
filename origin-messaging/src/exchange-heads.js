@@ -1,10 +1,8 @@
 'use strict'
 
-const Channel = require('ipfs-pubsub-1on1')
+import logger from './logger'
 
-const Logger = require('logplease')
-const logger = Logger.create("exchange-heads", { color: Logger.Colors.Yellow })
-Logger.setLogLevel('ERROR')
+const Channel = require('ipfs-pubsub-1on1')
 
 const getHeadsForDatabase = store => (store && store._oplog) ? store._oplog.heads : []
 

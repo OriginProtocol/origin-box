@@ -7,18 +7,16 @@ import url from 'url'
 const Log = require('ipfs-log')
 const IPFSApi = require('ipfs-api')
 const IPFS = require('ipfs')
-
 import * as config from './config'
 import InsertOnlyKeystore from './insert-only-keystore'
 import exchangeHeads from './exchange-heads'
+import logger from './logger'
 import {
   verifyConversationSignature,
   verifyConversers,
   verifyMessageSignature,
   verifyRegistrySignature
 } from './verify'
-
-process.env.LOG = 'DEBUG'
 
 //the OrbitDB should be the message one
 const messagingRoomsMap = {}
@@ -29,13 +27,13 @@ async function startRoom(roomDb, roomId, storeType, writers, shareFunc) {
     key = roomId + '-' +  writers.join('-')
   }
 
-  console.log(`Checking key: ${key}`)
+  logger.debug(`Checking key: ${key}`)
 
   if(!messagingRoomsMap[key]) {
     messagingRoomsMap[key] = 'pending'
     const room = await roomDb[storeType](roomId, { write:writers })
 
-    console.log(`Room started: ${room.id}`)
+    logger.debug(`Room started: ${room.id}`)
 
     if (shareFunc) {
       shareFunc(room)
@@ -54,7 +52,7 @@ function joinConversationKey(converser1, converser2) {
 
 function onConverse(roomDb, conversee, payload) {
   const converser = payload.key
-  console.log(`Started conversation between: ${converser} and ${conversee}`)
+  logger.debug(`Started conversation between: ${converser} and ${conversee}`)
   const writers = [converser, conversee].sort()
   startRoom(roomDb, config.CONV, 'eventlog', writers)
 }
@@ -62,7 +60,7 @@ function onConverse(roomDb, conversee, payload) {
 function handleGlobalRegistryWrite(convInitDb, payload) {
   if (payload.op == 'PUT') {
     const ethAddress = payload.key
-    console.log(`Started conversation for: ${ethAddress}`)
+    logger.debug(`Started conversation for: ${ethAddress}`)
     startRoom(convInitDb, config.CONV_INIT_PREFIX + ethAddress, 'kvstore', ['*'])
   }
 }
@@ -79,12 +77,12 @@ async function pinIPFS(ipfs, entry, signature, key) {
   if (ipfs.pin && ipfs.pin.add) {
     const hash = await saveToIpfs(ipfs, entry, signature, key)
     if (hash) {
-      console.log(`Pinning hash ${hash}`)
+      logger.debug(`Pinning hash ${hash}`)
 
       try {
         return await ipfs.pin.add(hash)
       } catch (err) {
-        console.error(`Cannot pin verified entry hash: ${hash}`)
+        logger.error(`Cannot pin verified entry hash: ${hash}`)
       }
     }
   }
@@ -92,7 +90,7 @@ async function pinIPFS(ipfs, entry, signature, key) {
 
 async function saveToIpfs(ipfs, entry, signature, key) {
   if (!entry) {
-    console.warn('Warning: Given input entry was null.')
+    logger.warn('Warning: Given input entry was null.')
     return null
   }
 
@@ -115,11 +113,11 @@ async function saveToIpfs(ipfs, entry, signature, key) {
       // message contents are authentic
       if (entry.hash) {
         if(entry.hash != hash) {
-          console.warn(`Hash mismatch: ${hash} from ${entry}`)
+          logger.warn(`Hash mismatch: ${hash} from ${entry}`)
         }
       }
       else {
-        console.warn(`Hash: ${hash} from ${logEntry}`)
+        logger.warn(`Hash: ${hash} from ${logEntry}`)
       }
       return hash
     })
@@ -131,7 +129,8 @@ async function snapshotDB(db) {
 
   await db._cache.set('queue', unfinished)
   await db._cache.set('raw_snapshot', snapshotData)
-  console.log('Saved snapshot:', snapshotData.id, ' queue:', unfinished.length)
+
+  loggger.debug('Saved snapshot:', snapshotData.id, ' queue:', unfinished.length)
 }
 
 async function loadSnapshotDB(db) {
@@ -221,10 +220,10 @@ const startOrbitDbServer = async (ipfs) => {
   orbitGlobal.keystore.registerSignVerify(
     config.CONV, undefined, verifyMessageSignature(globalRegistry)
   )
-  console.log(`Orbit registry started...: ${globalRegistry.id}`)
+  logger.debug(`Orbit registry started...: ${globalRegistry.id}`)
 
   globalRegistry.events.on('ready', (address) => {
-    console.log(`Ready...`)
+    logger.info(`Ready...`)
   })
 
   // testing it's best to drop this for now
@@ -239,15 +238,15 @@ const main = async () => {
     const ipfsId = ipfs.id()
 
     await ipfsId.then((peer) => {
-      console.log(`Connected to IPFS server: ${peer.id}`)
+      logger.info(`Connected to IPFS server: ${peer.id}`)
       startOrbitDbServer(ipfs)
     }).catch((error) => {
-      console.log(`Connection error ${config.IPFS_ADDRESS}:${config.IPFS_PORT}`)
+      logger.error(`Connection error ${config.IPFS_ADDRESS}:${config.IPFS_PORT}`)
       setTimeout(main, 5000)
     })
   } else {
     // Create our own IPFS server
-    console.log(`Creating IPFS server`)
+    logger.debug(`Creating IPFS server`)
 
     const ipfs = new IPFS({
       repo: "./ipfs",
