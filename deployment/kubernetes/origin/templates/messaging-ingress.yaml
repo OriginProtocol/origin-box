@@ -13,8 +13,8 @@ metadata:
     certmanager.k8s.io/cluster-issuer: {{ .Values.clusterIssuer }}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     # Increase timeouts for websockets
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "86400"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "86400"
 spec:
   tls:
     {{- if eq .Values.clusterIssuer "letsencrypt-staging" }}
