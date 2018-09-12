@@ -40,10 +40,10 @@ The `.prod.` will be removed when the services are made live.
 
 | Service | Address | Notes | State |
 | ------- | -------- | ----- | ----- |
-| DApp | demo.prod.originprotocol.com | | |
-| IPFS | ipfs.prod.originprotocol.com | Directed to IPFS API or gateway based on path | |
-| Messaging | messaging.prod.originprotocol.com | Exposes websocket at `/` | |
-| Bridge | bridge.prod.originprotocol.com |  | |
+| DApp | demo.prod.originprotocol.com | | Running |
+| IPFS | ipfs.prod.originprotocol.com | Directed to IPFS API or gateway based on path | Running |
+| Messaging | messaging.prod.originprotocol.com | Exposes websocket at `/` | Running |
+| Bridge | bridge.prod.originprotocol.com | | Running |
 | Eth Node | eth.prod.originprotocol.com | Mainnet node. RPC exposed at `/rpc` and WS exposed at `/ws`. Ethstats available at `/`. | Running |
 | Discovery | discovery.prod.originprotocol.com |  |
 | Faucet | faucet.prod.originprotocol.com | |
