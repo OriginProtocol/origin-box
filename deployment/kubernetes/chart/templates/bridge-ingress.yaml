@@ -17,11 +17,7 @@ metadata:
     nginx.ingress.kubernetes.io/cors-allow-origin: "https://demo.{{ .Release.Namespace }}.originprotocol.com"
 spec:
   tls:
-    {{- if eq .Values.clusterIssuer "letsencrypt-staging" }}
-    - secretName: bridge.{{ .Release.Namespace }}.originprotocol.com-staging
-    {{- else }}
     - secretName: bridge.{{ .Release.Namespace }}.originprotocol.com
-    {{- end }}
       hosts:
         - bridge.{{ .Release.Namespace }}.originprotocol.com
   rules:

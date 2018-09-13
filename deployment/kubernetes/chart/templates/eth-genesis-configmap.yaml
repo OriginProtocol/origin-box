@@ -1,3 +1,5 @@
+# Defines the config for Ethereum private network
+
 {{- if eq .Release.Namespace "dev" }}
 apiVersion: v1
 kind: ConfigMap

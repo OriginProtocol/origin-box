@@ -9,10 +9,10 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.gethTxReplicas }}
+  serviceName: {{ template "ethereum.fullname" . }}-tx-node
   selector:
     matchLabels:
       app: {{ template "ethereum.fullname" . }}-tx-node
-  serviceName: {{ template "ethereum.fullname" . }}-tx-node
   template:
     metadata:
       labels:

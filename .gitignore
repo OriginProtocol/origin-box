@@ -4,4 +4,4 @@
 /origin-docs/
 /origin-website/
 /development/.ipfs
-/deployment/kubernetes/origin/values-secret.yaml
+/deployment/kubernetes/values/secret.yaml

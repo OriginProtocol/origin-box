@@ -38,7 +38,7 @@ spec:
         image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.messagingImage }}:{{ .Values.messagingImageTag }}"
         env:
           - name: IPFS_ADDRESS
-            value: {{ template "messaging.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+            value: {{ template "messaging.fullname" . }}.{{ .Release.Namespace }}
           - name: IPFS_PORT
             value: "5001"
           - name: MESSAGING_NAMESPACE
@@ -49,9 +49,6 @@ spec:
       name: {{ template "messaging.fullname" . }}-data
       labels:
         app: {{ template "messaging.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
     spec:
       accessModes:
         - ReadWriteOnce  # Read-write for a single node only

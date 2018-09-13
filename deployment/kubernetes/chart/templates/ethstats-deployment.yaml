@@ -16,7 +16,6 @@ spec:
     metadata:
       labels:
         app: {{ template "ethereum.fullname" . }}-ethstats
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
     spec:
       containers:

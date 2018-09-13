@@ -15,14 +15,10 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, POST"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://demo.{{ .Release.Namespace }}.originprotocol.com"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
 spec:
   tls:
-    {{- if eq .Values.clusterIssuer "letsencrypt-staging" }}
-    - secretName: ipfs.{{ .Release.Namespace }}.originprotocol.com-staging
-    {{- else }}
     - secretName: ipfs.{{ .Release.Namespace }}.originprotocol.com
-    {{- end }}
       hosts:
         - ipfs.{{ .Release.Namespace }}.originprotocol.com
   rules:

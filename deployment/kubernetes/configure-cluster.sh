@@ -14,7 +14,7 @@ kubectl patch deploy \
 	-p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
 
 # Configure cluster namespaces
-kubectl create -f namespaces.yaml
+kubectl create -f misc/namespaces.yaml
 
 sleep 10
 
@@ -24,7 +24,7 @@ sleep 10
 helm install stable/cert-manager --name cert-manager \
 	--namespace kube-system	\
 	--set rbac.create=true \
-	--set ingressShim.defaultIssuerName=letsencrypt-staging \
+	--set ingressShim.defaultIssuerName=letsencrypt-prod \
 	--set ingressShim.defaultIssuerKind=ClusterIssuer
 
 # The nginx-ingress controllers need separate names because helm requires
@@ -57,7 +57,7 @@ helm install stable/nginx-ingress --name prod-ingress \
 	--set controller.service.loadBalancerIP="35.203.166.86" \
 	--set-string controller.extraArgs.enable-ssl-chain-completion=false
 
-kubectl create -f letsencrypt-staging.yaml
-kubectl create -f letsencrypt-prod.yaml
-kubectl create -f snapshot-cronjob.yaml -n kube-system
-kubectl create -f ssd-storageclass.yaml
+kubectl create -f misc/letsencrypt-staging.yaml
+kubectl create -f misc/letsencrypt-prod.yaml
+kubectl create -f misc/snapshot-cronjob.yaml -n kube-system
+kubectl create -f misc/ssd-storageclass.yaml

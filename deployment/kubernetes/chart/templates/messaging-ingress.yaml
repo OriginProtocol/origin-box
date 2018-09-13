@@ -18,11 +18,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "2m"
 spec:
   tls:
-    {{- if eq .Values.clusterIssuer "letsencrypt-staging" }}
-    - secretName: messaging.{{ .Release.Namespace }}.originprotocol.com-staging
-    {{- else }}
     - secretName: messaging.{{ .Release.Namespace }}.originprotocol.com
-    {{- end }}
       hosts:
         - messaging.{{ .Release.Namespace }}.originprotocol.com
   rules:

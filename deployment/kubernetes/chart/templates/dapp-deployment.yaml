@@ -8,7 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: {{ default 1 .Values.dappReplicas }}
+  replicas: {{ default 2 .Values.dappReplicas }}
   selector:
     matchLabels:
       app: {{ template "dapp.fullname" . }}

@@ -14,11 +14,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   tls:
-    {{- if eq .Values.clusterIssuer "letsencrypt-staging" }}
-    - secretName: eth.{{ .Release.Namespace }}.originprotocol.com-staging
-    {{- else }}
     - secretName: eth.{{ .Release.Namespace }}.originprotocol.com
-    {{- end }}
       hosts:
         - eth.{{ .Release.Namespace }}.originprotocol.com
   rules:

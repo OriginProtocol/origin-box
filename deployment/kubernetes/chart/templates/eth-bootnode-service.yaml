@@ -1,3 +1,6 @@
+# Bootnode is used for private Ethereum blockchain
+# It only gets installed in the dev namespace
+
 {{- if eq .Release.Namespace "dev" }}
 apiVersion: v1
 kind: Service
@@ -16,7 +19,6 @@ spec:
   ports:
   - name: http
     port: 80
-    protocol: TCP
   - name: discovery
     port: 30301
     protocol: UDP
