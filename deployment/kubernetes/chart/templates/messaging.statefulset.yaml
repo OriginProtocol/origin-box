@@ -53,6 +53,8 @@ spec:
       accessModes:
         - ReadWriteOnce  # Read-write for a single node only
       storageClassName: "standard"
+      accessModes:
+        - ReadWriteOnce
       resources:
         requests:
           storage: {{ default "8Gi" .Values.messagingIpfsStorageRequestSize }}
