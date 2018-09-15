@@ -16,4 +16,6 @@ else
   ]'
 fi
 
+ulimit -n 100000
+
 exec ipfs daemon --migrate --enable-pubsub-experiment
