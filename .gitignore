@@ -5,3 +5,6 @@
 /origin-website/
 /development/.ipfs
 /deployment/kubernetes/values/secret.yaml
+
+# MacOS
+.DS_Store
