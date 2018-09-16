@@ -35,26 +35,45 @@ spec:
         command: ["/bin/sh"]
         args:
           - "-c"
-          - geth
+          {{- if eq .Release.Namespace "dev" }}
+          - "geth
             --ws
             --wsaddr 0.0.0.0
             --wsport 8546
             --rpc
             --rpcaddr 0.0.0.0
             --rpcport 8545
-            --rpcvhosts *
+            --rpcvhosts=\"*\"
             --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SERVICE}
-          {{- if eq .Release.Namespace "dev" }}
             --networkid=${NETWORK_ID}
-            --bootnodes=`cat /root/.ethereum/bootnodes`
+            --bootnodes=`cat /root/.ethereum/bootnodes`"
           {{- else if eq .Release.Namespace "staging" }}
+          - "geth
+            --ws
+            --wsaddr 0.0.0.0
+            --wsport 8546
+            --rpc
+            --rpcaddr 0.0.0.0
+            --rpcport 8545
+            --rpcvhosts=\"*\"
+            --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SERVICE}
             --rinkeby
-            --cache 512
+            --cache 2048
             --syncmode fast
-            --bootnodes enode://a24ac7c5484ef4ed0c5eb2d36620ba4e4aa13b8c84684e1b4aab0cebea2ae45cb4d375b77eab56516d34bfbd3c1a833fc51296ff084b770b94fb9028c4d25ccf@52.169.42.101:30303
+            --bootnodes enode://a24ac7c5484ef4ed0c5eb2d36620ba4e4aa13b8c84684e1b4aab0cebea2ae45cb4d375b77eab56516d34bfbd3c1a833fc51296ff084b770b94fb9028c4d25ccf@52.169.42.101:30303"
           {{- else if eq .Release.Namespace "prod" }}
-            --cache 512
-            --syncmode fast
+          - "geth
+            --ws
+            --wsaddr 0.0.0.0
+            --wsport 8546
+            --rpc
+            --rpcaddr 0.0.0.0
+            --rpcport 8545
+            --rpcvhosts=\"*\"
+            --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SERVICE}
+            --rinkeby
+            --cache 2048
+            --syncmode fast"
           {{- end }}
         env:
         - name: ETHSTATS_SERVICE
