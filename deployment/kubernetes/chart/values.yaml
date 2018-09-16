@@ -35,7 +35,7 @@ ethstatsImageTag: latest
 
 gethImage: ethereum/client-go
 gethImageTag: v1.8.13
-gethTxReplicas: 2
+gethTxReplicas: 1
 gethMinerReplicas: 2
 gethMinerCpuLimit: 0.5
 
