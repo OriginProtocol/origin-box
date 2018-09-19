@@ -34,8 +34,6 @@ services:
     environment:
       network.bind_host: 0
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-    ports:
-      - "9200:9200"
     networks:
       - default
 
@@ -121,6 +119,7 @@ services:
       - ELASTICSEARCH_HOST=elasticsearch:9200
     command: >
       /bin/bash -c "npm install --quiet --no-progress &&
+      wait-for.sh -t 0 -q origin-js:8081 --
       npm link origin &&
       node node_modules/db-migrate/bin/db-migrate up -e origin-box &&
       node listener/listener.js --elasticsearch --db --web3-url='http://origin-js:8545'"
