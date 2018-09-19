@@ -53,7 +53,6 @@ spec:
           protocol: UDP
         - name: discovery-tcp
           containerPort: 30303
-          protocol: TCP
         volumeMounts:
           - name: {{ template "ethereum.fullname" . }}-data
             mountPath: /root/.ethereum
