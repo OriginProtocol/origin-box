@@ -146,8 +146,9 @@ if [ "$NAMESPACE" != "dev" ] && [ "$NAMESPACE" != "staging" ] && [ "$NAMESPACE" 
     exit
 fi
 
+check_secrets
+
 if [ "$CONTAINER" ]; then
-  check_secrets
   build_and_push_container
   update_values
 fi
