@@ -26,6 +26,20 @@ The instructions for installing Helm are available [here](https://github.com/hel
 
 [SOPS](https://github.com/mozilla/sops) is used for encrypting and decrypting deployment secrets. Install it and follow the instructions for GCP KMS for authentication.
 
+The key for encryption of secrets is available at:
+
+`projects/origin-214503/locations/global/keyRings/sops/cryptoKeys/sops-key`
+
+To encrypt a secrets file run
+
+`sops --encrypt --gcp-kms projects/origin-214503/locations/global/keyRings/sops/cryptoKeys/sops-key secret.yaml > secret.enc.yaml`
+
+## Allowing Docker to use Google Container Registry
+
+You will need to provide Docker with credentials for GCR to allow it to push containers:
+
+`gcloud auth configure-docker`
+
 # Deploying
 
 The general steps for updating a service are:
