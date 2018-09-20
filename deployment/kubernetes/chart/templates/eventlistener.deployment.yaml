@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "eventlistener.fullname" . }}
+  labels:
+    app: {{ template "eventlistener.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "eventlistener.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "eventlistener.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: event-listener
+        image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.eventlistenerImage }}:{{ .Values.eventlistenerImageTag }}"
+        env:
+          - name: DATABASE_HOST
+            value: '127.0.0.1'
+          - name: DATABASE_PORT
+            value: 5432
+          - name: DATABASE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "discovery.fullname" }}
+                key: discoveryDbUsername
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "discovery.fullname" }}
+                key: discoveryDbPassword
+          - name: DATABASE_NAME
+            value: 'discovery'
+          - name: ELASTICSEARCH_HOST
+            value: elasticsearch-elasticsearch-svc:9200
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.11
+        command: ["/cloud_sql_proxy",
+                  "-instances={{ .Values.discoveryDbInstance }}=tcp:5432",
+                  "-credential_file=/secrets/cloudsql/credentials.json"]
+        securityContext:
+          runAsUser: 2  # non-root user
+          allowPrivilegeEscalation: false
+        volumeMounts:
+          - name: cloudsql-instance-credentials
+            mountPath: /secrets/cloudsql
+            readOnly: true
+      volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials
+      initContainers:
+      - name: database-migrations
+        image: {{ .Values.eventlistenerImage }}:{{ .Values.eventlistenerImageTag }}
+        env:
+          - name: DATABASE_HOST
+            value: '127.0.0.1'
+          - name: DATABASE_PORT
+            value: 5432
+          - name: DATABASE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "discovery.fullname" }}
+                key: discoveryDbUsername
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "discovery.fullname" }}
+                key: discoveryDbPassword
+          - name: DATABASE_NAME
+            value: 'discovery'
+        command: |
+          /bin/bash -c "DATABASE_URL=postgres://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOST}:$DATABASE_PORT}/${DATABASE_NAME} node node_modules/db-migrate/bin/db-migrate up"
