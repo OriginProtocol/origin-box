@@ -120,8 +120,8 @@ services:
       - ELASTICSEARCH_HOST=elasticsearch:9200
     command: >
       /bin/bash -c "npm install --quiet --no-progress &&
-      wait-for.sh -t 0 -q origin-js:8081 --
       npm link origin &&
+      wait-for.sh -t 0 -q origin-js:8081 --
       node node_modules/db-migrate/bin/db-migrate up -e origin-box &&
       node listener/listener.js --elasticsearch --db --web3-url='http://origin-js:8545'"
     networks:
