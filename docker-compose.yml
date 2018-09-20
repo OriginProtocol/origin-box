@@ -82,6 +82,7 @@ services:
       - DATABASE_USERNAME=origin
       - DATABASE_PASSWORD=origin
       - DATABASE_NAME=origin-indexing
+      - ELASTICSEARCH_HOST=elasticsearch:9200
     depends_on:
       - origin-js
       - postgres
