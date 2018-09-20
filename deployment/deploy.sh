@@ -93,8 +93,8 @@ function update_values() {
 function update_helm_release() {
   echo 'Updating Helm release'
   helm upgrade ${NAMESPACE} \
-    kubernetes/chart \
-    -f kubernetes/chart/values.yaml \
+    kubernetes/charts/origin \
+    -f kubernetes/charts/origin/values.yaml \
     -f ${VALUES_PATH}/${VALUES_FILE} \
     -f ${VALUES_PATH}/${SECRETS_FILE}
 }
