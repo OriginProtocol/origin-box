@@ -38,7 +38,7 @@ function build_and_push_container() {
 
   if [ "$DEPLOYED_TAG" == "$GIT_HASH" ]; then
     echo -e "\033[31mDeployed container tag is the same as new deploy tag, appending unix timestamp to tag to force Kubernetes to update deployment\033[0m"
-    DEPLOY_TAG=${DEPLOY_TAG}-date +%s
+    DEPLOY_TAG=${DEPLOY_TAG}-`date +%s`
   fi
 
   echo -ne "This will build and deploy a container for \033[94m${CONTAINER}@${GIT_HASH}\033[0m, proceed (y/n)? "
