@@ -22,7 +22,7 @@ WORKDIR /app
 # Invalidate Docker cache if necessary
 COPY --from=origin-js-build /version.json /origin-js.version.json
 ADD https://api.github.com/repos/OriginProtocol/origin-dapp/git/refs/heads/master /version.json
-# Clone origin-js from master (development) branch
+# Clone origin-dapp from master (development) branch
 RUN git clone --depth 1 --branch master https://github.com/OriginProtocol/origin-dapp.git /app
 
 ENV BRIDGE_SERVER_DOMAIN=bridge.dev.originprotocol.com \
