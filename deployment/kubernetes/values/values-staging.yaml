@@ -15,12 +15,19 @@ gethTxReplicas: 1
 ipfsImageTag: ipfs/go-ipfs
 ipfsImageTag: master
 
+faucetImage: origin-faucet
 faucetImageTag: '28438d2'
 
+eventlistenerImage: event-listener
+eventlistenerImageTag: 'latest'
+
+discoveryImage: origin-discovery
+discoveryImageTag: 'latest'
+#
 # IPFS server for OrbitDB
 messagingIpfsImage: ipfs/go-ipfs
 messagingIpfsImageTag: v0.4.17
-#
+
 # OrbitDB
 messagingImage: origin-messaging
 messagingImageTag: 'latest'
