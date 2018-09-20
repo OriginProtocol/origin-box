@@ -10,4 +10,4 @@ node node_modules/db-migrate/bin/db-migrate up
 echo "Starting event listener"
 
 # Start event listener
-node listener/listener.js
+node listener/listener.js --elasticsearch --db --web3-url=${WEB3_URL} --ipfs-url=${IPFS_URL}

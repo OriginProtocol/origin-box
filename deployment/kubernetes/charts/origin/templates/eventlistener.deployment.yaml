@@ -23,9 +23,9 @@ spec:
         image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.eventlistenerImage }}:{{ .Values.eventlistenerImageTag }}"
         env:
         - name: DATABASE_HOST
-          value: localhost
+          value: "localhost"
         - name: DATABASE_PORT
-          value: 5432
+          value: "5432"
         - name: DATABASE_USERNAME
           valueFrom:
             secretKeyRef:
@@ -37,9 +37,13 @@ spec:
               name: {{ template "discovery.fullname" . }}
               key: DATABASE_PASSWORD
         - name: DATABASE_NAME
-          value: discovery
+          value: "discovery"
         - name: ELASTICSEARCH_HOST
-          value: elasticsearch-elasticsearch-svc:9200
+          value: "elasticsearch-elasticsearch-svc:9200"
+        - name: WEB3_URL
+          value: {{ .Values.eventlistenerWeb3Url | quote }}
+        - name: IPFS_URL
+          value: "https://ipfs.{{ .Release.Namespace }}.originprotocol.com"
         command: ["/bin/sh"]
         args:
         - "-c"
@@ -57,3 +61,7 @@ spec:
         - name: cloudsql-instance-credentials
           mountPath: /secrets/cloudsql
           readOnly: true
+      volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials
