@@ -77,7 +77,7 @@ function check_secrets() {
     if [ "$answer" != "${answer#[Nn]}" ] ;then
       exit
     else
-      sops --decrypt ${VALUES_PATH}/${SECRETS_FILE_ENC} > ${VALUES_PATH}/${SECRETS_FILE}
+      out=$(sops --decrypt ${VALUES_PATH}/${SECRETS_FILE_ENC}) && [[ -n "$out" ]] && echo $out > ${VALUES_PATH}/${SECRETS_FILE})
     fi
   fi
 }
