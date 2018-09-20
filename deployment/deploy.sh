@@ -28,16 +28,12 @@ function build_and_push_container() {
     exit 1
   fi
 
-  if [ ! -d "../${CONTAINER}" ]; then
-    echo -e "\033[31mCould not find ../${CONTAINER} directory \033[0m"
-    exit 1
-  fi
-
   DEPLOYED_TAG=`cat ${VALUES_PATH}/${VALUES_FILE} | grep ${IMAGE_TAG_FIELD} | cut -d " " -f 2 | tr -d "'"`
 
   echo -e "Deployed container tag is \033[94m${DEPLOYED_TAG}\033[0m"
 
-  GIT_HASH=$(cd ../${CONTAINER} && git rev-parse --short HEAD)
+  # Get short git hash from remote repo
+  GIT_HASH=$(git ls-remote git@github.com:OriginProtocol/$REPO.git HEAD | cut -c1-7)
 
   if [ "$DEPLOYED_TAG" == "$GIT_HASH" ]; then
     echo -e "\033[31mDeployed container tag is the same as git hash that will be deployed\033[0m"
@@ -106,12 +102,23 @@ while getopts ":c:n:h" opt; do
       case "$CONTAINER" in
         origin-dapp)
 	  IMAGE_TAG_FIELD=dappImageTag
+	  REPO=origin-dapp
 	  ;;
         origin-bridge)
 	  IMAGE_TAG_FIELD=bridgeImageTag
+	  REPO=origin-bridge
 	  ;;
         origin-messaging)
 	  IMAGE_TAG_FIELD=messagingImageTag
+	  REPO=origin-box
+	  ;;
+	origin-discovery)
+	  IMAGE_TAG_FIELD=discoveryImageTag
+	  REPO=origin-js
+	  ;;
+	event-listener)
+	  IMAGE_TAG_FIELD=eventlistenerImageTag
+	  REPO=origin-js
 	  ;;
 	*)
 	  echo -e "\033[31mContainer not yet implemented\033[0m"
@@ -120,6 +127,20 @@ while getopts ":c:n:h" opt; do
       ;;
     n)
       NAMESPACE=$OPTARG
+      case "$NAMESPACE" in
+        dev)
+          BRANCH=master
+	  ;;
+        staging)
+          BRANCH=staging
+	  ;;
+        prod)
+          BRANCH=stable
+	  ;;
+	*)
+	  echo -e "\033[31mInvalid namespace\033[0m"
+	  exit 1
+     esac
       ;;
     h)
       usage
@@ -139,11 +160,6 @@ done
 if [ ! "$NAMESPACE" ]; then
   usage
   exit 1
-fi
-
-if [ "$NAMESPACE" != "dev" ] && [ "$NAMESPACE" != "staging" ] && [ "$NAMESPACE" != "prod" ]; then
-    echo -e "\033[31mNamespace must be one of: dev, staging, prod\033[0m"
-    exit
 fi
 
 check_secrets
