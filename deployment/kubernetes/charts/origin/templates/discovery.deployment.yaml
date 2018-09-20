@@ -26,21 +26,21 @@ spec:
           - containerPort: 4000
         env:
           - name: DATABASE_HOST
-            value: '127.0.0.1'
+            value: localhost
           - name: DATABASE_PORT
             value: 5432
           - name: DATABASE_USERNAME
             valueFrom:
               secretKeyRef:
-                name: {{ template "discovery.fullname" }}
-                key: discoveryDbUsername
+                name: {{ template "discovery.fullname" . }}
+                key: DATABASE_USERNAME
           - name: DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ template "discovery.fullname" }}
-                key: discoveryDbPassword
+                name: {{ template "discovery.fullname" . }}
+                key: DATABASE_PASSWORD
           - name: DATABASE_NAME
-            value: 'discovery'
+            value: discovery
           - name: ELASTICSEARCH_HOST
             value: elasticsearch-elasticsearch-svc:9200
       - name: cloudsql-proxy
