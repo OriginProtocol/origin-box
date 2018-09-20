@@ -34,9 +34,11 @@ function build_and_push_container() {
 
   # Get short git hash from remote repo
   GIT_HASH=$(git ls-remote git@github.com:OriginProtocol/$REPO.git HEAD | cut -c1-7)
+  DEPLOY_TAG=${GIT_HASH}
 
   if [ "$DEPLOYED_TAG" == "$GIT_HASH" ]; then
-    echo -e "\033[31mDeployed container tag is the same as git hash that will be deployed\033[0m"
+    echo -e "\033[31mDeployed container tag is the same as new deploy tag, appending unix timestamp to tag to force Kubernetes to update deployment\033[0m"
+    DEPLOY_TAG=${DEPLOY_TAG}-date +%s
   fi
 
   echo -ne "This will build and deploy a container for \033[94m${CONTAINER}@${GIT_HASH}\033[0m, proceed (y/n)? "
@@ -50,11 +52,11 @@ function build_and_push_container() {
 
   docker build ../ \
     -f dockerfiles/${NAMESPACE}/${CONTAINER} \
-    -t ${GCLOUD_REGISTRY}/${GCLOUD_PROJECT}/${NAMESPACE}/${CONTAINER}:${GIT_HASH} \
+    -t ${GCLOUD_REGISTRY}/${GCLOUD_PROJECT}/${NAMESPACE}/${CONTAINER}:${DEPLOY_TAG} \
     -t ${GCLOUD_REGISTRY}/${GCLOUD_PROJECT}/${NAMESPACE}/${CONTAINER}:latest \
 
   echo -e "Pushing container to \033[94m${GCLOUD_REGISTRY}... \033[0m"
-  docker push ${GCLOUD_REGISTRY}/${GCLOUD_PROJECT}/${NAMESPACE}/${CONTAINER}:${GIT_HASH}
+  docker push ${GCLOUD_REGISTRY}/${GCLOUD_PROJECT}/${NAMESPACE}/${CONTAINER}:${DEPLOY_TAG}
 }
 
 function check_secrets() {
@@ -111,6 +113,10 @@ while getopts ":c:n:h" opt; do
         origin-messaging)
 	  IMAGE_TAG_FIELD=messagingImageTag
 	  REPO=origin-box
+	  ;;
+	origin-faucet)
+	  IMAGE_TAG_FIELD=faucetImageTag
+	  REPO=origin-js
 	  ;;
 	origin-discovery)
 	  IMAGE_TAG_FIELD=discoveryImageTag
