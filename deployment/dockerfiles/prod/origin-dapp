@@ -4,6 +4,7 @@ COPY ./origin-dapp /app
 
 ENV BRIDGE_SERVER_DOMAIN=bridge.prod.originprotocol.com \
     BRIDGE_SERVER_PROTOCOL=https \
+    DISCOVERY_SERVER_URL=https://discovery.prod.originprotocol.com \
     IPFS_DOMAIN=ipfs.prod.originprotocol.com \
     IPFS_GATEWAY_PORT=443 \
     IPFS_GATEWAY_PROTOCOL=https \
