@@ -32,5 +32,4 @@ spec:
         - name: HOST
           value: "bridge.{{ .Release.Namespace }}.originprotocol.com"
         - name: HTTPS
-          value: "True"
-e
+          value: "true"
