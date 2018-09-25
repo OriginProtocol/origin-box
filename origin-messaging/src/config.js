@@ -10,7 +10,7 @@ module.exports = Object.freeze({
 
   IPFS_MAX_CONNECTIONS: process.env.IPFS_MAX_CONNECTIONS ?
     Number(process.env.IPFS_MAX_CONNECTIONS) : 16384,
-  IPFS_REPO_PATH: process.env.IPFS_REPO_PATH || './ipfs,
+  IPFS_REPO_PATH: process.env.IPFS_REPO_PATH || './ipfs',
   IPFS_WS_ADDRESS: process.env.IPFS_WS_ADDRESS || '/ip4/0.0.0.0/tcp/9012/ws',
 
   RPC_SERVER: process.env.RPC_SERVER
