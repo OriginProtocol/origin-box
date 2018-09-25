@@ -18,7 +18,8 @@ ENV BRIDGE_SERVER_DOMAIN=bridge.prod.originprotocol.com \
     MESSAGING_ACCOUNT=0xcEB59C583Cb09694606189E9E558D001D308A08B \
     ARBITRATOR_ACCOUNT=WE_SHALL_DEFINE_THIS_BEFORE_MAINNET_LAUNCH \
     PROVIDER_URL=https://rinkeby.infura.io/emIXjs9eDuy57IlTYsIP \
-    MESSAGING_NAMESPACE=origin
+    MESSAGING_NAMESPACE=origin \
+    DEPLOY_TAG=$deploy_tag
 
 RUN npm install --quiet --no-progress
 RUN NODE_ENV=production node_modules/.bin/webpack --progress --display errors-only
