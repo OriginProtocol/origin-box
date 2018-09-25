@@ -1,0 +1,112 @@
+resource_types:
+  - name: npm-cache
+    type: docker-image
+    source:
+      repository: ymedlop/npm-cache-resource
+      tag: 9
+
+resources:
+- name: origin-js
+  type: git
+  source: &origin-js-source
+    uri: git@github.com/tomlinton/origin-js
+    branch: master
+    paths: [contracts/*]
+    private_key: ((github-ci-private-key))
+- name: npm-cache
+  type: npm-cache
+  source:
+    <<: *origin-js-source
+    paths:
+      - package.json
+      - package-lock.json
+
+jobs:
+  - name: install-dependencies
+    plan:
+      - get: origin-js
+        trigger: true
+      - get: npm-cache
+  - name: run-tests
+    plan:
+      - get: origin-js
+        trigger: true
+        passed: [install-dependencies]
+      - get: npm-cache
+        passed: [install-dependencies]
+      - task: run tests
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: node
+              tag: 9-alpine
+          inputs:
+          - name: origin-js
+          - name: npm-cache
+          run:
+            path: /bin/sh
+            args:
+            - -c
+            - |
+              set -eux
+              # Copy the dependencies to origin-js
+              mv npm-cache/node_modules origin-js
+              # Run contract tests
+              cd origin-js && npm run test:contracts
+  - name: deploy-and-commit-contracts
+    plan:
+      - get: origin-js
+        trigger: true
+        passed: [run-tests]
+      - get: npm-cache
+        passed: [run-tests]
+      - task: deploy contracts
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: node
+              tag: 9-alpine
+          inputs:
+            - name: origin-js
+            - name: npm-cache
+          run:
+            path: /bin/sh
+            args:
+            - -c
+            - |
+              set -eux
+              # Copy the dependencies to origin-js
+              mv npm-cache/node_modules origin-js
+              cd origin-js/contracts
+              # TODO truffle in origin-js package.json is out of date?
+              npx truffle@4.1.14 migrate --reset --compile-all --network origin
+        - task: commit contracts
+          config:
+            platform: linux
+            image_resource:
+              type: docker-image
+              source:
+                repository: node
+                tag: 9-alpine
+            inputs:
+              - name: origin-js
+            outputs:
+              - name: origin-js-modified
+            run:
+              path: /bin/sh
+              args:
+              - -c
+              - |
+                set -eux
+                # Run the minify contracts helper script
+                # TODO clean this up with a real script instead of node -e
+                node -e "require('scripts/helpers/minify-contracts')()"
+                git add origin-js/contracts/build
+                git commit -m "Update contract artifacts [ci skip]"
+          - put: origin-js
+            params:
+              repository: origin-js-modified

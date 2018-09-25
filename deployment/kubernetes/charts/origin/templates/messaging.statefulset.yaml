@@ -30,6 +30,8 @@ spec:
             {{- end }}
           - name: IPFS_REPO_PATH
             value: "/data/ipfs"
+          - name: ORBIT_DB_PATH
+            value: "/data/odb"
         port:
           - name: websocket
             containerPort: 9012
