@@ -18,6 +18,7 @@ spec:
       labels:
         app: {{ template "messaging.fullname" . }}
     spec:
+      containers:
       - name: origin-messaging
         image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.messagingImage }}:{{ .Values.messagingImageTag }}"
         env:
@@ -27,6 +28,8 @@ spec:
             {{- else }}
             value: "origin"
             {{- end }}
+          - name: IPFS_REPO_PATH
+            value: "/data/ipfs"
         port:
           - name: websocket
             containerPort: 9012
