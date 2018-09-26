@@ -37,7 +37,7 @@ ENV BRIDGE_SERVER_DOMAIN=bridge.staging.originprotocol.com \
     MESSAGING_ACCOUNT=0xcEB59C583Cb09694606189E9E558D001D308A08B \
     PROVIDER_URL=https://rinkeby.infura.io/emIXjs9eDuy57IlTYsIP \
     MESSAGING_NAMESPACE=origin:staging \
-    DEPLOY_TAG=$deploy_tag
+    DEPLOY_TAG=$DEPLOY_TAG
 
 RUN npm install --quiet --no-progress
 
