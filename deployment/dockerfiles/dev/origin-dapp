@@ -19,6 +19,8 @@ FROM node:9 as build
 
 WORKDIR /app
 
+ARG DEPLOY_TAG
+
 # Invalidate Docker cache if necessary
 COPY --from=origin-js-build /version.json /origin-js.version.json
 ADD https://api.github.com/repos/OriginProtocol/origin-dapp/git/refs/heads/master /version.json

@@ -2,6 +2,8 @@ FROM node:9 as build
 
 WORKDIR /app
 
+ARG DEPLOY_TAG
+
 # Invalidate Docker cache if necessary
 ADD https://api.github.com/repos/OriginProtocol/origin-dapp/git/refs/heads/stable /version.json
 # Clone origin-dapp from stable branch
