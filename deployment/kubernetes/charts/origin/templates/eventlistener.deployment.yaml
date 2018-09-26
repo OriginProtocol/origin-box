@@ -21,6 +21,7 @@ spec:
       containers:
       - name: event-listener
         image: "{{ .Values.containerRegistry }}/{{ .Release.Namespace }}/{{ .Values.eventlistenerImage }}:{{ .Values.eventlistenerImageTag }}"
+        imagePullPolicy: Always
         env:
         - name: DATABASE_HOST
           value: "localhost"
