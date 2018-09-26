@@ -43,7 +43,7 @@ spec:
         - name: WEB3_URL
           value: {{ .Values.eventlistenerWeb3Url | quote }}
         - name: IPFS_URL
-          value: {{ template "ipfs.host" . | quote }}
+          value: {{ template "ipfs.host" . }}
         - name: CONTINUE_BLOCK
           value: {{ default "0" .Values.eventlistenerContinueBlock | quote }}
         command: ["/bin/sh"]
