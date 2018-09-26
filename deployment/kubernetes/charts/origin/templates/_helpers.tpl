@@ -50,7 +50,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this
 {{- end -}}
 
 {{- define "faucet.host" -}}
-{{- if ne .Release.Namespace "staging" -}}
+{{- if eq .Release.Namespace "staging" -}}
 {{- printf "faucet.originprotocol.com" }}
 {{- else -}}
 {{- printf "faucet.%s.originprotocol.com" .Release.Namespace -}}
