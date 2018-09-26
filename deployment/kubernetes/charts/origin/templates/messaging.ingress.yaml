@@ -18,11 +18,11 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "2m"
 spec:
   tls:
-    - secretName: messaging.{{ .Release.Namespace }}.originprotocol.com
+    - secretName: {{ template "messaging.host" . }}
       hosts:
-        - messaging.{{ .Release.Namespace }}.originprotocol.com
+        - {{ template "messaging.host" . }}
   rules:
-    - host: messaging.{{ .Release.Namespace }}.originprotocol.com
+    - host: {{ template "messaging.host" . }}
       http:
         paths:
           - path: /

@@ -30,6 +30,6 @@ spec:
               name: {{ template "bridge.fullname" . }}
               key: ENVKEY
         - name: HOST
-          value: "bridge.{{ .Release.Namespace }}.originprotocol.com"
+          value: {{ template "bridge.host" . }}
         - name: HTTPS
           value: "true"
