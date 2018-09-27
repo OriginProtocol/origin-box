@@ -119,9 +119,9 @@ services:
       - DATABASE_NAME=origin-indexing
       - ELASTICSEARCH_HOST=elasticsearch:9200
     command: >
-      /bin/bash -c "npm link origin &&
+      /bin/bash -c "wait-for.sh -t 0 -q origin-js:8081 --
+      npm link origin &&
       npm install --quiet --no-progress &&
-      wait-for.sh -t 0 -q origin-js:8081 --
       node node_modules/db-migrate/bin/db-migrate up -e origin-box &&
       node listener/listener.js --elasticsearch --db --web3-url='http://origin-js:8545'"
     networks:
@@ -200,9 +200,9 @@ services:
       # and the inode is not allowed to change.
       >
       /bin/bash -c "wait-for.sh -t 0 -q origin-messaging:9012 --
-      source set-ipfs-swarm.sh /ipfs/config &&
       npm install --quiet --no-progress &&
       npm link origin &&
+      source set-ipfs-swarm.sh /ipfs/config &&
       wait-for.sh -t 0 -q origin-js:8081 --
       node node_modules/webpack-dev-server/bin/webpack-dev-server.js --host 0.0.0.0 --watch-poll 500"
     networks:
