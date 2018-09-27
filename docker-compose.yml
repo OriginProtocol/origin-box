@@ -92,7 +92,6 @@ services:
       /bin/bash -c "wait-for.sh -t 0 -q origin-js:8081 --
       npm link origin &&
       npm install --quiet --no-progress &&
-      npm link origin &&
       node apollo/index.js"
     networks:
       - default
