@@ -36,6 +36,8 @@ spec:
           value: "true"
         - name: DATABASE_HOST
           value: "localhost"
+        - name: DATABASE_PORT
+          value: "5432"
         - name: DATABASE_USERNAME
           valueFrom:
             secretKeyRef:
@@ -48,6 +50,8 @@ spec:
               key: DATABASE_PASSWORD
         - name: DATABASE_NAME
           value: "origin"
+        - name: FLASK_APP
+          value: "/app/main.py"
         command: ["/bin/sh"]
         args:
         - "-c"
