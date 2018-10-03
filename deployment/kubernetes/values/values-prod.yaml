@@ -21,7 +21,7 @@ faucetImage: origin-faucet
 faucetImageTag: '28438d2'
 
 eventlistenerImage: event-listener
-eventlistenerImageTag: '6e22b35'
+eventlistenerImageTag: '6e22b35-1538544696'
 eventlistenerWeb3Url: https://mainnet.infura.io/emIXjs9eDuy57IlTYsIP
 eventlistenerContinueBlock: 6425000
 
